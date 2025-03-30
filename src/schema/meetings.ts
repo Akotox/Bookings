@@ -19,5 +19,8 @@ export const meetingActionSchema = z
   .object({
     eventId: z.string().min(1, "Required"),
     clerkUserId: z.string().min(1, "Required"),
+    userId: z.string().min(1, "Required"),
+    frequency: z.number(),
+    teacherId: z.string().min(1, "Required"),
   })
   .merge(meetingSchemaBase)

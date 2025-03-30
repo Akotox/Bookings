@@ -1,6 +1,7 @@
 import { EventForm } from "@/components/forms/EventForm"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { db } from "@/drizzle/db"
+import { getSyncedApp } from "@/server/teacher/getSyncedApp"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 
@@ -13,6 +14,7 @@ export default async function EditEventPage({
 }) {
   const { userId, redirectToSignIn } = auth()
   if (userId == null) return redirectToSignIn()
+
 
   const event = await db.query.EventTable.findFirst({
     where: ({ id, clerkUserId }, { and, eq }) =>

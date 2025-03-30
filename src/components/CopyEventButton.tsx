@@ -12,7 +12,7 @@ export function CopyEventButton({
   ...buttonProps
 }: Omit<ButtonProps, "children" | "onClick"> & {
   eventId: string
-  clerkUserId: string
+  clerkUserId: string,
 }) {
   const [copyState, setCopyState] = useState<CopyState>("idle")
 
@@ -22,8 +22,15 @@ export function CopyEventButton({
     <Button
       {...buttonProps}
       onClick={() => {
+        const userId = "abc123";
+        const frequency = "0";
+        const teacherId = "0";
+  
+    
+        // Construct the final URL
+        const url = `${location.origin}/book/${clerkUserId}/${eventId}/${userId}/${frequency}/${teacherId}`;
         navigator.clipboard
-          .writeText(`${location.origin}/book/${clerkUserId}/${eventId}`)
+          .writeText(url)
           .then(() => {
             setCopyState("copied")
             setTimeout(() => setCopyState("idle"), 2000)

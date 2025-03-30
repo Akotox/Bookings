@@ -18,7 +18,7 @@ import Link from "next/link"
 import { Button } from "../ui/button"
 import { Textarea } from "../ui/textarea"
 import { Switch } from "../ui/switch"
-import { createEvent, deleteEvent, updateEvent } from "@/server/actions/events"
+import { createEvents, deleteEvent, updateEvent } from "@/server/actions/events"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -53,15 +53,15 @@ export function EventForm({
   })
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    const action =
-      event == null ? createEvent : updateEvent.bind(null, event.id)
-    const data = await action(values)
+    // const action =
+    //   event == null ? createEvent : updateEvent.bind(null, event.id)
+    // const data = await action(values)
 
-    if (data?.error) {
-      form.setError("root", {
-        message: "There was an error saving your event",
-      })
-    }
+    // if (data?.error) {
+    //   form.setError("root", {
+    //     message: "There was an error saving your event",
+    //   })
+    // }
   }
 
   return (

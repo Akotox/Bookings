@@ -40,6 +40,8 @@ export async function createMeeting(
   redirect(
     `/book/${data.clerkUserId}/${
       data.eventId
-    }/success?startTime=${data.startTime.toISOString()}`
+    }/${
+      data.userId
+    }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
   )
 }

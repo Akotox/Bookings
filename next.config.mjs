@@ -5,6 +5,18 @@ const nextConfig = {
       dynamic: 0,
     },
   },
-}
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets.aceternity.com",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+  },
+};
 
-export default nextConfig
+export default nextConfig;

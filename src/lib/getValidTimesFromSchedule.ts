@@ -33,12 +33,34 @@ export async function getValidTimesFromSchedule(
     with: { availabilities: true },
   })
 
-  if (schedule == null) return []
+  if (!schedule || !schedule.availabilities) return [];
 
-  const groupedAvailabilities = Object.groupBy(
-    schedule.availabilities,
-    a => a.dayOfWeek
-  )
+
+  // const groupedAvailabilities = Object.groupBy(
+  //   schedule.availabilities,
+  //   a => a.dayOfWeek
+  // )
+
+  const groupedAvailabilities: Partial<
+    Record<
+      "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday",
+      {
+        id: string; scheduleId: string; startTime: string; endTime: string; dayOfWeek:
+          "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday"
+      }[]
+    >
+  > = schedule.availabilities.reduce((acc, a) => {
+    const day = a.dayOfWeek as
+      | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+
+    if (!acc[day]) {
+      acc[day] = [];
+    }
+
+    acc[day]?.push(a);
+    return acc;
+  }, {} as Partial<Record<"monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday", typeof schedule.availabilities>>);
+
 
   const eventTimes = await getCalendarEventTimes(event.clerkUserId, {
     start,

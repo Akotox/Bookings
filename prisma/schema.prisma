@@ -1,0 +1,1072 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+
+model Newsletter {
+  id             String   @id @default(uuid())
+  fullName       String
+  emailAddress   String   @unique
+  registeredAt   DateTime @default(now())
+  languageSpoken Language @default(English)
+}
+
+model TeacherEarnings {
+  id               String   @id @default(cuid())
+  teacherId        String
+  stripeId         String?
+  totalAmount      Decimal  @default(0)
+  withdrawable     Decimal  @default(0)
+  withdrawn        Decimal  @default(0)
+  balance          Decimal  @default(0)
+  createdAt        DateTime @default(now())
+  classCount       Int      @default(0)
+
+  transactions     TransactionRecord[]
+  WithdrawalRecord WithdrawalRecord[]
+}
+
+model TransactionRecord {
+  id               String   @id @default(cuid())
+  transactionType  TransactionType
+  userId           String?
+  stripeInvoiceId  String?   @unique
+  stripeTransferId String?
+  amount           Decimal  @default(0)
+  createdAt        DateTime @default(now())
+
+  teacherEarningsId String
+  teacherEarnings   TeacherEarnings @relation(fields: [teacherEarningsId], references: [id])
+}
+
+enum TransactionType {
+  EARNING
+  WITHDRAWAL
+  DEPOSIT
+}
+
+model WithdrawalRecord {
+  id             String   @id @default(cuid())
+  teacherId      String   @unique(map: "one_withdrawal_per_month") // Ensure one withdrawal per month
+  amount         Decimal  @default(0)
+  withdrawalDate DateTime @default(now())
+  month          Int
+  year           Int
+
+  teacherEarnings TeacherEarnings @relation(fields: [teacherId], references: [id])
+}
+
+model AffiliatePayOut {
+  id              String   @id @default(uuid())
+  token           String
+  amount          Decimal
+  client          String
+  status          PaymentStatus @default(PENDING)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  name             String
+  role             Roles          @default(NEW_USER)
+  hashedPassword   String?
+  picture          String?
+  stripeCustomerId String?
+  hasUsedFreeTrial Boolean        @default(false)
+  hasApplied       Boolean        @default(false)
+  restricted       Boolean        @default(false)
+  affiliate        Affiliate?
+  applicant        Applicant?
+  available        Availability?
+  studentMeetings  Meeting[]      @relation("StudentMeetings")
+  sessions         Session[]
+  subscriptions    Subscription[]
+  teacher          Teacher?
+  sentMessages     messages[]     @relation("SentMessages")
+  receivedMessages messages[]     @relation("ReceivedMessages")
+}
+
+model Teacher {
+  id                   String                @id @default(uuid())
+  subject              Subject?
+  nationality          TeacherNationality
+  lessonPrice          Int
+  lessonDescription    String
+  description          String
+  lessons              Int                   @default(0)
+  resume               String
+  deliveredLessons     Int                   @default(0)
+  stripeProductId      String?
+  stripePriceId        String?
+  userId               String                @unique
+  isStripeActive       StripeStatus          @default(INACTIVE)
+  stripeTeacherAccount String?
+  schoolGrades         VietnameseGrades?
+  vietnameseCourses    VietnameseCources?
+  dateJoined           DateTime              @default(now())
+  meetsRequirement     Boolean               @default(false)
+  Availability         Availability[]
+  ClassBundle          ClassBundle[]
+  meetings             Meeting[]
+  notifications        TeacherNotification[]
+  studentReview        StudentReview[]
+  subscriptions        Subscription[]
+  User                 User                  @relation(fields: [userId], references: [id])
+}
+
+model TeacherNotification {
+  id                 String           @unique @default(uuid())
+  notificationType   NotificationType
+  studentEmail       String
+  studentName        String
+  link               String
+  Teacher            Teacher?         @relation(fields: [teacherId], references: [id])
+  teacherId          String?
+  unreadNotification Int              @default(0)
+}
+
+model SyncScheduleApp {
+  id           String  @id @default(uuid())
+  clerkUserId  String  @unique
+  email        String  @unique
+  teacherId    String  @unique
+}
+
+enum NotificationType {
+  StudentReview
+  Class_Schedule
+  Trial_class
+}
+
+model Affiliate {
+  id        String @id @default(uuid())
+  firstName String
+  lastName  String
+  token     String
+  userId    String @unique
+  isStripeActive       StripeStatus          @default(INACTIVE)
+  stripeAccount String?
+  locale    String
+  User      User   @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  teacherId            String
+  classBundleId        String
+  stripeSubscriptionId String             @unique
+  status               SubscriptionStatus
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  lessonsRemaining     Int
+  meetings             Meeting[]
+  classBundle          ClassBundle        @relation(fields: [classBundleId], references: [id])
+  teacher              Teacher            @relation(fields: [teacherId], references: [id])
+  user                 User               @relation(fields: [userId], references: [id])
+
+  @@unique([userId, teacherId])
+}
+
+model Applicant {
+  id                  String             @id @default(uuid())
+  firstName           String
+  lastName            String
+  nationality         String
+  languageSpoken      Language
+  languageLevel       LanguageLevel
+  subject             Subject?
+  certificate         String
+  certIssuedBy        String
+  certificateFile     String
+  postCertificate     String?
+  postCertIssuedBy    String?
+  postCertificateFile String?
+  videoUrl            String
+  timeZone            TimeZone
+  bio                 String?
+  profilePic          String
+  price               Int
+  accepted            Boolean            @default(false)
+  locale              String
+  schoolGrades        VietnameseGrades?
+  vietnameseCourses   VietnameseCources?
+  userId              String             @unique
+  User                User               @relation(fields: [userId], references: [id])
+}
+
+model Availability {
+  id         String      @id @default(uuid())
+  userId     String      @unique
+  teacherId  String?
+  Teacher    Teacher?    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  User       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeBlocks TimeBlock[]
+}
+
+model TimeBlock {
+  id             String        @id @default(uuid())
+  startTime      String
+  endTime        String
+  day            Day
+  availabilityId String?
+  Availability   Availability? @relation(fields: [availabilityId], references: [id])
+}
+
+model StudentReview {
+  id                                       String                  @unique @default(uuid())
+  teacherName                              String
+  studentName                              String
+  dateOfClass                              String
+  participationLevel                       ParticipationLevel
+  understandingOfMaterial                  UnderstandingOfMaterial
+  fluency                                  String?
+  pronunciation                            String?
+  listeningSkills                          String?
+  otherRelevantSkills                      String?
+  topStrengths                             String
+  whatStudentDidWell                       String
+  areasOfImprovement                       String
+  suggestionsForImprovement                String
+  additionalObservation                    String
+  slug                                     String                  @unique
+  studentId                                String                  @unique
+  teacherId                                String?
+  Teacher                                  Teacher?                @relation(fields: [teacherId], references: [id])
+  textAnalysisTechniques                   String?
+  creativityInWriting                      String?
+  understandingTheVietnamesCulturalContext String?
+  understandingOfJapaneseculture           String?
+
+  problemSolvingSkills  String?
+  accuracyInCalculation String?
+  problemSolvingSpeed   String?
+  knowledgeRetention    String?
+  LogicalReasoning      String?
+  teacherEmail          String?
+}
+
+model ReportedUsers {
+  id                String @id @default(uuid())
+  senderName        String
+  senderRole        Roles
+  senderId          String
+  senderPicture     String
+  initialSenderRole Roles
+  receiverName      String
+  receiverRole      Roles
+  receiverId        String
+  receiverPicture   String
+  messageContent    String
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Meeting {
+  id              String        @id @default(cuid())
+  studentId       String
+  teacherId       String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  googleMeetUrl   String?
+  status          MeetingStatus @default(PENDING)
+  price           Float
+  subscriptionId  String?
+  description     String?
+  teacherEmail    String?
+  title           String?
+  studentTimeZone String
+  teacherTimeZone String
+  teacherFinished Boolean       @default(false)
+  studentFinished Boolean       @default(false)
+  student         User          @relation("StudentMeetings", fields: [studentId], references: [id])
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+  teacher         Teacher       @relation(fields: [teacherId], references: [id])
+  payment         Payment?
+}
+
+model MeetingTicket {
+  id              String       @id @default(cuid())
+  studentId       String
+  teacherId       String
+  teacherEmail    String
+  studentTimeZone String?
+  title           String
+  description     String?
+  teacherTimeZone String?
+  meetingId       String?
+  totalPrice      Float       @default(0)
+  frequency       Int
+  status          TicketStatus @default(PENDING)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  slots           String[]
+}
+
+model Slot {
+  id        String    @id @default(cuid())
+  timeZone  String
+  startTime String
+  endTime   String
+  date      String
+  isTaken   Boolean
+  teacherId String
+  classType ClassType
+  ticketId  String?
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  meetingId       String        @unique
+  amount          Float
+  currency        String
+  status          PaymentStatus
+  stripePaymentId String?
+  createdAt       DateTime      @default(now())
+  meeting         Meeting       @relation(fields: [meetingId], references: [id])
+}
+
+model Reschedule {
+  id         String   @id @default(cuid())
+  meetingId  String   @unique
+  date       DateTime
+  studentId  String
+  teacherId  String
+  month      Int
+  year       Int
+  status     RescheduleStatus @default(PENDING)
+  destination     Destination @default(TEACHER)
+  @@index([studentId, teacherId, month, year]) 
+}
+
+enum Destination {
+  TEACHER
+  STUDENT
+}
+ 
+enum RescheduleStatus {
+  PENDING
+  APPROVED
+  REVOKED
+  COMPLETED
+}
+
+
+model messages {
+  id           String   @id @default(uuid())
+  message      String
+  fromId       String
+  toId         String
+  senderName   String
+  timestamp    DateTime @default(now())
+  unreadMessag Int      @default(0)
+  from         User     @relation("SentMessages", fields: [fromId], references: [id])
+  to           User     @relation("ReceivedMessages", fields: [toId], references: [id])
+}
+
+model ClassBundle {
+  id           String         @id @default(cuid())
+  name         String
+  price        Float
+  lessonsCount Int
+  priceId      String
+  productId    String
+  period       String
+  unitPrice    Float
+  unitDiscount Int
+  teacherId    String
+  teacher      Teacher        @relation(fields: [teacherId], references: [id])
+  Subscription Subscription[]
+}
+
+enum StripeStatus {
+  INACTIVE
+  PENDING
+  ACTIVE
+}
+
+enum ParticipationLevel {
+  Very_Active
+  Active
+  Somewhat_Passive
+  Passive
+}
+
+enum UnderstandingOfMaterial {
+  Excellent
+  Good
+  Average
+  Needs_Improvement
+}
+
+enum Roles {
+  ADMIN
+  TEACHER
+  STUDENT
+  NEW_USER
+  AFFILIATE
+  RESTRICTED
+}
+
+enum ClassType {
+  REGULAR
+  TRIAL
+}
+
+enum Day {
+  monday
+  tuesday
+  wednesday
+  thursday
+  friday
+  saturday
+  sunday
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  PENDING
+  RESCHEDULE_REQUESTED
+  RESCHEDULE_APPROVED
+  RESCHEDULE_REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum TicketStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+  RESCHEDULE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+}
+
+enum LessonStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum VietnameseCources {
+  Vietnamese_Literature
+  Vietnamese_Math
+  Vietnamese_Physics
+  Vietnamese_Chemistry
+}
+
+enum VietnameseGrades {
+  Primary_Level
+  Secondary_Level
+  High_School_Level
+}
+
+enum Subject {
+  English
+  Italian
+  Spanish
+  French
+  German
+  Japanese
+  Korean
+  Arabic
+  Chinese_Mandarin
+  Computer_science
+  Economics
+  Accounting
+  Chemistry
+  Biology
+  Algebra
+  Physics
+  History
+  Math
+  Portuguese
+  Statistics
+  Russian
+  Polish
+  Turkish
+  Ukrainian
+  Dutch
+  Hungarian
+  Hindi
+  Czech
+  Norwegian
+  Greek
+  Hebrew
+  Georgian
+  Armenian
+  Finnish
+  Swedish
+  Arts
+  Music
+  Acting_skills
+  Art_classes
+  Telugu
+  Tamil
+  Sign
+  Tagalog
+  Romanian
+  Irish
+  Icelandic
+  Persian_Farsi
+  Croatian
+  Catalan
+  Bulgarian
+  Bengali
+  Danish
+  Latin
+  Punjabi
+  Thai
+  Belarusian
+  Serbian
+  Tibetan
+  Urdu
+  Lithuanian
+  Khmer
+  Slovak
+  Sanskrit
+  Vietnamese
+  PR
+  International_Business
+  Marketing_Strategy
+  Content_marketing
+  Business_Management
+  Dota2
+  Concursos
+  Objective_C
+  Data_Science
+  UX_UI
+  IT_Project_Management
+  Artificial_intelligence
+  Web_Development
+  Web_Analytics
+  Java
+  C
+  Swift
+  Go_language
+  Rust
+  Scala
+  HTML
+  XML
+  CSS
+  JavaScript
+  NodeJS
+  Python
+  PHP
+  Ruby
+  Bash
+  iOS_app_development
+  Android_app_development
+  Databases
+  Algorithms
+  Marathi
+  Yoruba
+  Amharic
+  Maori
+  Igbo
+  Sinhala
+  Burmese
+  Lao
+  Kazakh
+  Tamazight
+  Public_Speaking
+  Cplusplus
+  Graphic_Design
+  Csharp
+  Welsh
+  Kannada
+  Gujarati
+  Ancient_Greek
+  Maltese
+  Creole
+  Yiddish
+  Bosnian
+  Estonian
+  Luganda
+  Cebuano
+  Basque
+  Quichua
+  Crimean_Tatar
+  Corporate_Finance
+  Geography
+  Philosophy
+  Writing
+  Sociology
+  Psychology
+  Social_Sciences_Humanities
+  Motion_design
+  Photography
+  Malayalam
+  R
+  PPC
+  Albanian
+  Pashto
+  Hawaiian
+  Esperanto
+  Xhosa
+  Macedonian
+  Kurdish
+  Kinyarwanda
+  Uzbek
+  Geometry
+  Literature
+  Design3D
+  Video_post_production
+  Tests
+  Law
+  Swahili
+  Afrikaans
+  Malay
+  Somali
+  Slovenian
+  Latvian
+  Mongolian
+  Luxembourgish
+  Quechua
+  Azerbaijani
+  Cantonese
+  Indonesian
+  Sales
+  Business_Modelling
+  Product_Management
+  Business_Strategy
+  Business_Analytics
+  SEO
+  SMM
+  Copywriting
+  Email_marketing
+}
+
+enum TeacherNationality {
+  United_States_Of_America
+  Peru
+  United_Kingdom
+  Canada
+  Australia
+  Afghanistan
+  Aland_Islands
+  Albania
+  Algeria
+  American_Samoa
+  Andorra
+  Angola
+  Anguilla
+  Antarctica
+  Antigua_And_Barbuda
+  Argentina
+  Armenia
+  Aruba
+  Austria
+  Azerbaijan
+  Bahamas
+  Bahrain
+  Bangladesh
+  Barbados
+  Belgium
+  Belize
+  Benin
+  Bermuda
+  Bhutan
+  Bolivia
+  Bonaire_Sint_Eustatius_And_Saba
+  Bosnia_And_Herzegovina
+  Botswana
+  Bouvet_Island
+  Brazil
+  British_Indian_Ocean_Territory
+  Brunei
+  Bulgaria
+  Burkina_Faso
+  Burundi
+  Cabo_Verde
+  Cambodia
+  Cameroon
+  Cayman_Islands
+  Central_African_Republic
+  Chad
+  Chile
+  China
+  Christmas_Island
+  Cocos_Keeling_Islands
+  Colombia
+  Comoros
+  Congo
+  Congo_Democratic_Republic_Of_The
+  Cook_Islands
+  Costa_Rica
+  Cote_Divoire
+  Croatia
+  Curacao
+  Cyprus
+  Czechia
+  Denmark
+  Djibouti
+  Dominica
+  Dominican_Republic
+  Ecuador
+  Egypt
+  El_Salvador
+  Equatorial_Guinea
+  Eritrea
+  Estonia
+  Eswatini
+  Ethiopia
+  Falkland_Islands_Malvinas
+  Faroe_Islands
+  Fiji
+  Finland
+  France
+  French_Guiana
+  French_Polynesia
+  French_Southern_Territories
+  Gabon
+  Gambia
+  Georgia
+  Germany
+  Ghana
+  Gibraltar
+  Greece
+  Greenland
+  Grenada
+  Guadeloupe
+  Guam
+  Guatemala
+  Guernsey
+  Guinea
+  Guinea_Bissau
+  Guyana
+  Haiti
+  Heard_Island_And_McDonald_Islands
+  Holy_See
+  Honduras
+  Hong_Kong
+  Hungary
+  Iceland
+  India
+  Indonesia
+  Iraq
+  Ireland
+  Isle_Of_Man
+  Israel
+  Italy
+  Jamaica
+  Japan
+  Jersey
+  Jordan
+  Kazakhstan
+  Kenya
+  Kiribati
+  Kosovo
+  Kuwait
+  Kyrgyzstan
+  Laos
+  Latvia
+  Lebanon
+  Lesotho
+  Liberia
+  Libya
+  Liechtenstein
+  Lithuania
+  Luxembourg
+  Macao
+  Madagascar
+  Malawi
+  Malaysia
+  Maldives
+  Mali
+  Malta
+  Marshall_Islands
+  Martinique
+  Mauritania
+  Mauritius
+  Mayotte
+  Mexico
+  Micronesia_Federated_States_Of
+  Moldova
+  Monaco
+  Mongolia
+  Montenegro
+  Montserrat
+  Morocco
+  Mozambique
+  Myanmar
+  Namibia
+  Nauru
+  Nepal
+  Netherlands
+  New_Caledonia
+  New_Zealand
+  Nicaragua
+  Niger
+  Nigeria
+  Niue
+  Norfolk_Island
+  North_Macedonia
+  Northern_Mariana_Islands
+  Norway
+  Oman
+  Pakistan
+  Palau
+  Palestine_State_Of
+  Panama
+  Papua_New_Guinea
+  Paraguay
+  Philippines
+  Pitcairn
+  Poland
+  Portugal
+  Puerto_Rico
+  Qatar
+  Reunion
+  Romania
+  Rwanda
+  Saint_Barthelemy
+  Saint_Helena_Ascension_And_Tristan_Da_Cunha
+  Saint_Kitts_And_Nevis
+  Saint_Lucia
+  Saint_Martin_French_Part
+  Saint_Pierre_And_Miquelon
+  Saint_Vincent_And_The_Grenadines
+  Samoa
+  San_Marino
+  Sao_Tome_And_Principe
+  Saudi_Arabia
+  Senegal
+  Serbia
+  Seychelles
+  Sierra_Leone
+  Singapore
+  Sint_Maarten_Dutch_Part
+  Slovakia
+  Slovenia
+  Solomon_Islands
+  Somalia
+  South_Africa
+  South_Georgia_And_The_South_Sandwich_Islands
+  South_Korea
+  South_Sudan
+  Spain
+  Sri_Lanka
+  Suriname
+  Svalbard_And_Jan_Mayen
+  Sweden
+  Switzerland
+  Taiwan
+  Tajikistan
+  Tanzania
+  Thailand
+  Timor_Leste
+  Togo
+  Tokelau
+  Tonga
+  Trinidad_And_Tobago
+  Tunisia
+  Turkey
+  Turkmenistan
+  Turks_And_Caicos_Islands
+  Tuvalu
+  Uganda
+  Ukraine
+  United_Arab_Emirates
+  United_States_Minor_Outlying_Islands
+  Uruguay
+  Uzbekistan
+  Vanuatu
+  Venezuela
+  Vietnam
+  Virgin_Islands_British
+  Virgin_Islands_Us
+  Wallis_And_Futuna
+  Western_Sahara
+  Yemen
+  Zambia
+  Zimbabwe
+}
+
+enum Language {
+  English
+  Spanish
+  Mandarin_Chinese
+  Hindi
+  Bengali
+  Portuguese
+  Russian
+  Japanese
+  Western_Punjabi
+  Marathi
+  Telugu
+  Wu_Chinese
+  Turkish
+  Korean
+  French
+  German
+  Vietnamese
+  Tamil
+  Urdu
+  Javanese
+  Italian
+  Egyptian_Arabic
+  Hausa
+  Thai
+  Gujarati
+  Kannada
+  Persian_Farsi
+  Polish
+  Pashto
+  Dutch
+  Somali
+  Sinhala
+  Greek
+  Czech
+  Hebrew
+  Malay
+  Burmese
+  Kazakh
+  Uzbek
+  Azerbaijani
+  Hungarian
+  Swedish
+  Finnish
+  Icelandic
+  Irish
+  Estonian
+  Latvian
+  Lithuanian
+  Romanian
+  Serbian
+  Croatian
+  Bosnian
+  Bulgarian
+  Albanian
+  Macedonian
+  Slovenian
+  Slovak
+  Armenian
+  Georgian
+  Belarusian
+  Ukrainian
+  Mongolian
+  Tibetan
+  Lao
+  Khmer
+  Amharic
+  Tigrinya
+  Yoruba
+  Igbo
+  Xhosa
+  Zulu
+  Swahili
+  Malagasy
+  Haitian_Creole
+  Luxembourgish
+  Maori
+  Catalan
+  Galician
+  Basque
+  Kurdish
+  Quechua
+  Aymara
+  Tamazight
+  Indonesian
+  Filipino
+  Tagalog
+  Hawaiian
+  Fijian
+  Samoan
+  Tongan
+  Tahitian
+  Oromo
+  Kinyarwanda
+  Lingala
+  Shona
+  Afrikaans
+  Maltese
+  Creole
+  Yiddish
+  Crimean_Tatar
+  Esperanto
+  Sindhi
+  Sango
+  Guarani
+  Kyrgyz
+  Turkmen
+  Nepali
+  Dzongkha
+  Hmong
+  Sundanese
+  Balochi
+  Wolof
+  Bambara
+  Tamasheq
+  Fulah
+  Ganda
+  Luganda
+  Cebuano
+  Niuean
+  Tok_Pisin
+  Tetum
+}
+
+enum LanguageLevel {
+  Native
+  Non_Native
+}
+
+enum TimeZone {
+  Pacific_Midway
+  Pacific_Honolulu
+  America_Anchorage
+  America_Los_Angeles
+  America_Denver
+  America_Chicago
+  America_New_York
+  America_Caracas
+  America_Halifax
+  America_St_Johns
+  America_Sao_Paulo
+  Atlantic_South_Georgia
+  Atlantic_Cape_Verde
+  Europe_London
+  Europe_Paris
+  Europe_Moscow
+  Asia_Tehran
+  Asia_Dubai
+  Asia_Kabul
+  Asia_Karachi
+  Asia_Kolkata
+  Asia_Kathmandu
+  Asia_Dhaka
+  Asia_Yangon
+  Asia_Bangkok
+  Asia_Shanghai
+  Asia_Tokyo
+  Australia_Adelaide
+  Australia_Sydney
+  Pacific_Noumea
+  Pacific_Auckland
+  Pacific_Fakaofo
+}

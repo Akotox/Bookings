@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "EarningsRecord" ADD COLUMN     "amount" DECIMAL(65,30) NOT NULL DEFAULT 0,
+ADD COLUMN     "withdrawable" DECIMAL(65,30) NOT NULL DEFAULT 0;

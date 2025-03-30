@@ -1,5 +1,6 @@
 "use server"
 
+import { Events } from "@/components/ui/type_writer_demo"
 import { db } from "@/drizzle/db"
 import { EventTable } from "@/drizzle/schema"
 import { eventFormSchema } from "@/schema/events"
@@ -9,19 +10,23 @@ import { redirect } from "next/navigation"
 import "use-server"
 import { z } from "zod"
 
-export async function createEvent(
-  unsafeData: z.infer<typeof eventFormSchema>
+export async function createEvents(
+  eventsData: Events[]
 ): Promise<{ error: boolean } | undefined> {
-  const { userId } = auth()
-  const { success, data } = eventFormSchema.safeParse(unsafeData)
+  const { userId } = auth();
 
-  if (!success || userId == null) {
-    return { error: true }
+  if (!userId) {
+    return { error: true };
   }
 
-  await db.insert(EventTable).values({ ...data, clerkUserId: userId })
+  const eventsWithUser = eventsData.map(event => ({
+    ...event,
+    clerkUserId: userId,
+  }));
 
-  redirect("/events")
+  await db.insert(EventTable).values(eventsWithUser);
+
+  redirect("/events");
 }
 
 export async function updateEvent(
