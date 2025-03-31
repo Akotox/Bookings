@@ -3,6 +3,13 @@ import { ScheduleForm } from "@/components/forms/ScheduleForm"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { db } from "@/drizzle/db"
 import { auth } from "@clerk/nextjs/server"
+import { Metadata } from "next"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Change Schedule",
+  };
+}
 
 export const revalidate = 0
 

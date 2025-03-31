@@ -3,7 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { db } from "@/drizzle/db"
 import { getSyncedApp } from "@/server/teacher/getSyncedApp"
 import { auth } from "@clerk/nextjs/server"
+import { Metadata } from "next"
 import { notFound } from "next/navigation"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Booking Completed",
+  };
+}
 
 export const revalidate = 0
 

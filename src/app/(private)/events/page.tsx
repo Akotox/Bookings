@@ -17,6 +17,14 @@ import { cn } from "@/lib/utils";
 import { getSyncedApp } from "@/server/teacher/getSyncedApp";
 import { getTeacherId } from "@/server/teacher/getTeacherByEmail";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Teacher Events List",
+  };
+}
 
 export const revalidate = 0;
 
