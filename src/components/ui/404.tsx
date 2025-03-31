@@ -12,9 +12,7 @@ export default function NotFound({ message }: { message: string }) {
           className="object-contain"
         />
       <h1 className="text-3xl font-bold mt-6">{message}</h1>
-      <p className="text-gray-500 mt-2">
-        The page you're looking for doesn't exist or has been moved.
-      </p>
+      
     </div>
   );
 }
