@@ -37,7 +37,6 @@ import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { createMeeting } from "@/server/actions/meetings";
-import { parse } from "path";
 
 export function MeetingForm({
   validTimes,
@@ -52,6 +51,7 @@ export function MeetingForm({
   classPerWeek,
   step,
   initialDate,
+  teacherName
 }: {
   validTimes: Date[];
   eventId: string;
@@ -65,7 +65,7 @@ export function MeetingForm({
   classPerWeek: number;
   step?: string;
   initialDate?: string;
-  count?: string;
+  teacherName: string;
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -78,7 +78,8 @@ export function MeetingForm({
       : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
       classPerWeek: classPerWeek,
       isTrial: isTrial,
-      step: parseInt(step! || "1", 10) || 0,
+      step: parseInt(step! || "1", 10) || 1,
+      teacherName: teacherName
     },
   });
 

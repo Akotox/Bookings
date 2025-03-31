@@ -52,6 +52,7 @@ export async function createCalendarEvent({
   frequency,
   timezone,
   step,
+  teacherName,
 }: {
   clerkUserId: string;
   guestName: string;
@@ -64,6 +65,7 @@ export async function createCalendarEvent({
   frequency: number;
   timezone: string;
   step?: number;
+  teacherName: string;
 }) {
   const oAuthClient = await getOAuthClient(clerkUserId);
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
@@ -83,9 +85,6 @@ export async function createCalendarEvent({
 
   const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/divider)}`;
 
-  console.log('====================================');
-  console.log(Math.floor(frequency/divider));
-  console.log('====================================');
 
   const calendarEvent = await google.calendar('v3').events.insert({
     calendarId: 'primary',
@@ -109,7 +108,7 @@ export async function createCalendarEvent({
         dateTime: formatISO(addMinutes(startTime, durationInMinutes)),
         timeZone: timezone,
       },
-      summary: `${guestName} + ${calendarUser.fullName}: ${eventName}`,
+      summary: `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`,
       recurrence: isTrial ? [] : [recurrenceRule],
       reminders: {
         useDefault: false,

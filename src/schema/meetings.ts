@@ -10,7 +10,7 @@ const meetingSchemaBase = z.object({
   classPerWeek: z.number().min(1, "Required"),
   isTrial: z.boolean().default(false),
   step: z.number().default(1),
-  count: z.number().optional(),
+  teacherName: z.string().min(1, "Required"),
 })
 
 export const meetingFormSchema = z

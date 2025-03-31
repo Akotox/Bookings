@@ -7,6 +7,7 @@ import { z } from "zod"
 import { createCalendarEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
+import { prisma } from "@/lib/prisma"
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
@@ -32,13 +33,26 @@ export async function createMeeting(
 
 
   if(data.isTrial){
-    await createCalendarEvent({
+    const res = await createCalendarEvent({
       ...data,
       startTime: startInTimezone,
       durationInMinutes: event.durationInMinutes,
       eventName: event.name,
       isTrial: true,
       frequency: data.frequency
+    })
+
+    console.log('====================================');
+    console.log(res);
+    console.log('====================================');
+
+    await prisma.user.update({
+      where: {
+        id: data.userId
+      },
+      data: {
+        hasUsedFreeTrial: true
+      }
     })
 
     redirect(
@@ -83,7 +97,7 @@ export async function createMeeting(
       frequency: data.frequency
     })
 
-    if(data.step === 2 && data.count == null){
+    if(data.step === 2){
       redirect(
         `/book/${data.clerkUserId}/${
           data.eventId
@@ -102,7 +116,7 @@ export async function createMeeting(
     )
   }
 
-  if (data.frequency === 12 ) {
+  if (data.frequency === 12) {
   
     await createCalendarEvent({
       ...data,
@@ -113,7 +127,17 @@ export async function createMeeting(
       frequency: data.frequency
     })
 
-    if(data.step === 2 ){
+    if(data.step === 2 && data.frequency === 12){
+      redirect(
+        `/book/${data.clerkUserId}/${
+          data.eventId
+        }/${
+          data.userId
+        }/${data.frequency}/${data.teacherId}/3?d=${data.startTime.toISOString()}`
+      )
+    }
+
+    if(data.step === 3 && data.frequency === 12){
       redirect(
         `/book/${data.clerkUserId}/${
           data.eventId

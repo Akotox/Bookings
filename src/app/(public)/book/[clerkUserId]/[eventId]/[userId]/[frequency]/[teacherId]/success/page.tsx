@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,7 +9,6 @@ import {
 import { db } from "@/drizzle/db";
 import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
-import { clerkClient } from "@clerk/nextjs/server";
 import { CheckCircle } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -40,7 +38,6 @@ export default async function SuccessPage({
   if (teacherName == null) notFound();
   
 
-  const calendarUser = await clerkClient().users.getUser(clerkUserId);
   const startTimeDate = new Date(startTime);
 
   return (

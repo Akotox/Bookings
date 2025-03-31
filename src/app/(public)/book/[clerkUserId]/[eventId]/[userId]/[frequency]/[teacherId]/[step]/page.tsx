@@ -124,12 +124,11 @@ export default async function BookEventPage({
             email={user.email}
             userId={userId}
             teacherId={teacherId}
-            frequency={frequencyInt} 
+            frequency={frequencyInt}
             classPerWeek={classPerWeek}
             step={step}
-            initialDate={d}
-            count={count}
-            />
+            initialDate={d} 
+            teacherName={teacherName}            />
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,7 @@
 import { MeetingForm } from "@/components/forms/MeetingForm";
 import NotFound from "@/components/ui/404";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -28,7 +29,6 @@ export const revalidate = 0;
 
 export default async function BookEventPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId },
- 
 }: {
   params: {
     clerkUserId: string;
@@ -69,8 +69,8 @@ export default async function BookEventPage({
 
   const frequencyInt = parseInt(frequency || "0", 10) || 0;
 
-  const classPerWeek: number = getFrequencyValue(frequencyInt)
-  
+  const classPerWeek: number = getFrequencyValue(frequencyInt);
+
   if (
     event.durationInMinutes === 60 &&
     hasTrial === true &&
@@ -100,15 +100,24 @@ export default async function BookEventPage({
     return <NoTimeSlots event={event} calendarUser={calendarUser} />;
   }
 
-  return (
+  return hasTrial === true ? (
+    <NotFound message="You don't have a trial class"/>
+  ) : (
     <div>
       <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="mb-8">
+        <CardHeader className="flex flex-col justify-center items-center">
+          <Image
+            src="/SB9 1.svg"
+            alt="Event banner"
+            width={500}
+            height={50}
+            className="rounded-lg mb-4 object-cover"
+          />
+          <CardTitle className="mb-12">
             Book {event.name} with {teacherName}
           </CardTitle>
           {event.description && (
-            <CardDescription>{event.description}</CardDescription>
+            <CardDescription className="mb-12">{event.description}</CardDescription>
           )}
         </CardHeader>
         <CardContent>
@@ -116,13 +125,15 @@ export default async function BookEventPage({
             validTimes={validTimes}
             eventId={event.id}
             clerkUserId={clerkUserId}
-            isTrial={frequencyInt === 0 || frequencyInt === 1 ? true : false}
+            isTrial={frequencyInt === 0 || frequencyInt === 1}
             name={user.name}
             email={user.email}
             userId={userId}
             teacherId={teacherId}
-            frequency={frequencyInt} 
-            classPerWeek={classPerWeek}          />
+            frequency={frequencyInt}
+            classPerWeek={classPerWeek}
+            teacherName={teacherName}
+          />
         </CardContent>
       </Card>
     </div>

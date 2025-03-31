@@ -69,7 +69,7 @@ export default async function BookEventPage({
 
   const frequencyInt = parseInt(frequency || "0", 10) || 0;
 
-  const classPerWeek: number = getFrequencyValue(frequencyInt)
+  const classPerWeek: number = getFrequencyValue(frequencyInt);
 
   if (
     event.durationInMinutes === 60 &&
@@ -121,9 +121,10 @@ export default async function BookEventPage({
             email={user.email}
             userId={userId}
             teacherId={teacherId}
-            frequency={frequencyInt} 
+            frequency={frequencyInt}
             classPerWeek={classPerWeek}
-            />
+            teacherName={teacherName}
+          />
         </CardContent>
       </Card>
     </div>
