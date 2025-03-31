@@ -29,7 +29,7 @@ import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Book a class",
+    title: "Book a trial",
   };
 }
 

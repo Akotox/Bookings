@@ -28,7 +28,7 @@ import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Book a trial",
+    title: "Book a class",
   };
 }
 
