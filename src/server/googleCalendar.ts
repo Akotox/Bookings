@@ -1,7 +1,7 @@
 import "use-server"
 import { clerkClient } from "@clerk/nextjs/server"
 import { google } from "googleapis"
-import { addMinutes, endOfDay, startOfDay } from "date-fns"
+import { addMinutes, endOfDay, startOfDay, addDays, getDay, formatISO } from "date-fns"
 
 export async function getCalendarEventTimes(
   clerkUserId: string,
@@ -48,46 +48,81 @@ export async function createCalendarEvent({
   guestNotes,
   durationInMinutes,
   eventName,
+  isTrial,
+  frequency,
+  timezone,
+  step,
 }: {
-  clerkUserId: string
-  guestName: string
-  guestEmail: string
-  startTime: Date
-  guestNotes?: string | null
-  durationInMinutes: number
-  eventName: string
+  clerkUserId: string;
+  guestName: string;
+  guestEmail: string;
+  startTime: Date;
+  guestNotes?: string | null;
+  durationInMinutes: number;
+  eventName: string;
+  isTrial: boolean;
+  frequency: number;
+  timezone: string;
+  step?: number;
 }) {
-  const oAuthClient = await getOAuthClient(clerkUserId)
-  const calendarUser = await clerkClient().users.getUser(clerkUserId)
+  const oAuthClient = await getOAuthClient(clerkUserId);
+  const calendarUser = await clerkClient().users.getUser(clerkUserId);
   if (calendarUser.primaryEmailAddress == null) {
-    throw new Error("Clerk user has no email")
+    throw new Error('Clerk user has no email');
   }
 
-  const calendarEvent = await google.calendar("v3").events.insert({
-    calendarId: "primary",
+  const divider: number = 
+  frequency === 8 || frequency === 32 || frequency === 72 ? 2 :  
+  frequency === 12 || frequency === 36 || frequency === 96 ? 3 : 
+  1;
+
+  const dayOfWeek = getDay(startTime);
+  const daysOfWeek = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+  const dayAbbreviation = daysOfWeek[dayOfWeek];
+
+
+  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/divider)}`;
+
+  console.log('====================================');
+  console.log(Math.floor(frequency/divider));
+  console.log('====================================');
+
+  const calendarEvent = await google.calendar('v3').events.insert({
+    calendarId: 'primary',
     auth: oAuthClient,
-    sendUpdates: "all",
+    sendUpdates: 'all',
     requestBody: {
       attendees: [
         { email: guestEmail, displayName: guestName },
         {
           email: calendarUser.primaryEmailAddress.emailAddress,
           displayName: calendarUser.fullName,
-          responseStatus: "accepted",
+          responseStatus: 'accepted',
         },
       ],
       description: guestNotes ? `Additional Details: ${guestNotes}` : undefined,
       start: {
-        dateTime: startTime.toISOString(),
+        dateTime: formatISO(startTime),
+        timeZone: timezone,
       },
       end: {
-        dateTime: addMinutes(startTime, durationInMinutes).toISOString(),
+        dateTime: formatISO(addMinutes(startTime, durationInMinutes)),
+        timeZone: timezone,
       },
       summary: `${guestName} + ${calendarUser.fullName}: ${eventName}`,
+      recurrence: isTrial ? [] : [recurrenceRule],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'popup', minutes: 0 },
+          { method: 'popup', minutes: 12 * 60 },
+          { method: 'popup', minutes: 60 },
+        ],
+      },
     },
-  })
+  });
 
-  return calendarEvent.data
+  return calendarEvent.data;
 }
 
 async function getOAuthClient(clerkUserId: string) {

@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { createMeeting } from "@/server/actions/meetings";
+import { parse } from "path";
 
 export function MeetingForm({
   validTimes,
@@ -48,6 +49,9 @@ export function MeetingForm({
   name,
   email,
   isTrial = true,
+  classPerWeek,
+  step,
+  initialDate,
 }: {
   validTimes: Date[];
   eventId: string;
@@ -58,6 +62,10 @@ export function MeetingForm({
   name: string;
   email: string;
   isTrial: boolean;
+  classPerWeek: number;
+  step?: string;
+  initialDate?: string;
+  count?: string;
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -68,6 +76,9 @@ export function MeetingForm({
       guestNotes:  isTrial
       ? "This session is a trial, so feel free to ask questions about our services and let us know your expectations. We want to ensure you get the most out of this experience."
       : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
+      classPerWeek: classPerWeek,
+      isTrial: isTrial,
+      step: parseInt(step! || "1", 10) || 0,
     },
   });
 

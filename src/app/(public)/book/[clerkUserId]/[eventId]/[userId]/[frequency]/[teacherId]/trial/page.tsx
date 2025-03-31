@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
-import { frequencyMapping, getFrequencyValue } from "@/lib/classesPerWeek";
+import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
@@ -24,11 +24,11 @@ import {
   roundToNearestMinutes,
 } from "date-fns";
 import Link from "next/link";
-
 export const revalidate = 0;
 
 export default async function BookEventPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId },
+ 
 }: {
   params: {
     clerkUserId: string;
@@ -70,7 +70,7 @@ export default async function BookEventPage({
   const frequencyInt = parseInt(frequency || "0", 10) || 0;
 
   const classPerWeek: number = getFrequencyValue(frequencyInt)
-
+  
   if (
     event.durationInMinutes === 60 &&
     hasTrial === true &&
@@ -122,8 +122,7 @@ export default async function BookEventPage({
             userId={userId}
             teacherId={teacherId}
             frequency={frequencyInt} 
-            classPerWeek={classPerWeek}
-            />
+            classPerWeek={classPerWeek}          />
         </CardContent>
       </Card>
     </div>

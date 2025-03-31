@@ -7,6 +7,10 @@ const meetingSchemaBase = z.object({
   guestName: z.string().min(1, "Required"),
   guestNotes: z.string().optional(),
   timezone: z.string().min(1, "Required"),
+  classPerWeek: z.number().min(1, "Required"),
+  isTrial: z.boolean().default(false),
+  step: z.number().default(1),
+  count: z.number().optional(),
 })
 
 export const meetingFormSchema = z

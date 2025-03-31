@@ -30,18 +30,108 @@ export async function createMeeting(
   const validTimes = await getValidTimesFromSchedule([startInTimezone], event)
   if (validTimes.length === 0) return { error: true }
 
-  await createCalendarEvent({
-    ...data,
-    startTime: startInTimezone,
-    durationInMinutes: event.durationInMinutes,
-    eventName: event.name,
-  })
 
-  redirect(
-    `/book/${data.clerkUserId}/${
-      data.eventId
-    }/${
-      data.userId
-    }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
-  )
+  if(data.isTrial){
+    await createCalendarEvent({
+      ...data,
+      startTime: startInTimezone,
+      durationInMinutes: event.durationInMinutes,
+      eventName: event.name,
+      isTrial: true,
+      frequency: data.frequency
+    })
+
+    redirect(
+      `/book/${data.clerkUserId}/${
+        data.eventId
+      }/${
+        data.userId
+      }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+    )
+  }
+
+  if (data.frequency === 4 || data.frequency === 24 || data.frequency === 48 ) {
+  
+    await createCalendarEvent({
+      ...data,
+      startTime: startInTimezone,
+      durationInMinutes: event.durationInMinutes,
+      eventName: event.name,
+      isTrial: false,
+      frequency: data.frequency
+    })
+
+    redirect(
+      `/book/${data.clerkUserId}/${
+        data.eventId
+      }/${
+        data.userId
+      }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+    )
+
+   
+  }
+
+  if (data.frequency === 8 ) {
+  
+    await createCalendarEvent({
+      ...data,
+      startTime: startInTimezone,
+      durationInMinutes: event.durationInMinutes,
+      eventName: event.name,
+      isTrial: false,
+      frequency: data.frequency
+    })
+
+    if(data.step === 2 && data.count == null){
+      redirect(
+        `/book/${data.clerkUserId}/${
+          data.eventId
+        }/${
+          data.userId
+        }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      )
+    }
+
+    redirect(
+      `/book/${data.clerkUserId}/${
+        data.eventId
+      }/${
+        data.userId
+      }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+    )
+  }
+
+  if (data.frequency === 12 ) {
+  
+    await createCalendarEvent({
+      ...data,
+      startTime: startInTimezone,
+      durationInMinutes: event.durationInMinutes,
+      eventName: event.name,
+      isTrial: false,
+      frequency: data.frequency
+    })
+
+    if(data.step === 2 ){
+      redirect(
+        `/book/${data.clerkUserId}/${
+          data.eventId
+        }/${
+          data.userId
+        }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      )
+    }
+    
+    redirect(
+      `/book/${data.clerkUserId}/${
+        data.eventId
+      }/${
+        data.userId
+      }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+    )
+  }
+  
+
+  
 }

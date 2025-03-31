@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
-import { frequencyMapping, getFrequencyValue } from "@/lib/classesPerWeek";
+import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
@@ -28,7 +28,8 @@ import Link from "next/link";
 export const revalidate = 0;
 
 export default async function BookEventPage({
-  params: { clerkUserId, eventId, userId, frequency, teacherId },
+  params: { clerkUserId, eventId, userId, frequency, teacherId, step },
+  searchParams: {d, count}
 }: {
   params: {
     clerkUserId: string;
@@ -36,7 +37,9 @@ export default async function BookEventPage({
     userId: string;
     frequency: string;
     teacherId: string;
+    step: string;
   };
+   searchParams: { d: string | undefined, count: string | undefined }
 }) {
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
@@ -123,6 +126,9 @@ export default async function BookEventPage({
             teacherId={teacherId}
             frequency={frequencyInt} 
             classPerWeek={classPerWeek}
+            step={step}
+            initialDate={d}
+            count={count}
             />
         </CardContent>
       </Card>
