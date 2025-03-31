@@ -10,7 +10,14 @@ import { db } from "@/drizzle/db";
 import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { CheckCircle } from "lucide-react";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Booking Completed",
+  };
+}
 
 export const revalidate = 0;
 

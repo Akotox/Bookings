@@ -25,6 +25,14 @@ import {
   roundToNearestMinutes,
 } from "date-fns";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Book a class",
+  };
+}
+
 export const revalidate = 0;
 
 export default async function BookEventPage({

@@ -10,8 +10,15 @@ import {
 import { db } from "@/drizzle/db"
 import { formatEventDescription } from "@/lib/formatters"
 import { clerkClient } from "@clerk/nextjs/server"
+import { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Book a class",
+  };
+}
 
 export const revalidate = 0
 

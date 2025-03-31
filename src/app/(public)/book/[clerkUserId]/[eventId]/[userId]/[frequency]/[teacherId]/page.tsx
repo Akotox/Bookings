@@ -23,7 +23,14 @@ import {
   endOfDay,
   roundToNearestMinutes,
 } from "date-fns";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Book a trial",
+  };
+}
 
 export const revalidate = 0;
 

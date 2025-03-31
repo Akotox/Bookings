@@ -12,7 +12,14 @@ import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { clerkClient } from "@clerk/nextjs/server";
 import { CheckCircle } from "lucide-react";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Booking Completed",
+  };
+}
 
 export const revalidate = 0;
 

@@ -1,4 +1,11 @@
 import { LoaderCircle } from "lucide-react"
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Loading ...",
+  };
+}
 
 export default function Loading() {
   return (
