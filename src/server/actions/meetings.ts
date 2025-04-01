@@ -108,6 +108,8 @@ export async function createMeeting(
 
     let startDate = new Date(res.start!.dateTime!);
 
+    let endDate = new Date(res.end!.dateTime!);
+
     for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
       await prisma.meeting.create({
         data: {
@@ -115,7 +117,7 @@ export async function createMeeting(
           teacherId: data.teacherId,
           date: startDate,
           startTime: startDate,
-          endTime: new Date(res.end!.dateTime!),
+          endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
           price: 0.0,
@@ -133,6 +135,7 @@ export async function createMeeting(
   
      
       startDate = addDays(startDate, 7);
+      endDate = addDays(endDate, 7);
     }
   
 
@@ -157,6 +160,7 @@ export async function createMeeting(
     })
 
     let startDate = new Date(res.start!.dateTime!);
+    let endDate = new Date(res.end!.dateTime!);
 
     for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
       await prisma.meeting.create({
@@ -165,7 +169,7 @@ export async function createMeeting(
           teacherId: data.teacherId,
           date: startDate,
           startTime: startDate,
-          endTime: new Date(res.end!.dateTime!),
+          endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
           price: 0.0,
@@ -183,6 +187,7 @@ export async function createMeeting(
   
      
       startDate = addDays(startDate, 7);
+      endDate = addDays(endDate, 7);
     }
 
 
@@ -213,6 +218,7 @@ export async function createMeeting(
     })
 
     let startDate = new Date(res.start!.dateTime!);
+    let endDate = new Date(res.end!.dateTime!);
 
     for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
       await prisma.meeting.create({
@@ -221,7 +227,7 @@ export async function createMeeting(
           teacherId: data.teacherId,
           date: startDate,
           startTime: startDate,
-          endTime: new Date(res.end!.dateTime!),
+          endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
           price: 0.0,
@@ -237,8 +243,8 @@ export async function createMeeting(
         },
       });
   
-     
       startDate = addDays(startDate, 7);
+      endDate = addDays(endDate, 7);
     }
 
     if (data.step === 2 && data.frequency === 12) {
