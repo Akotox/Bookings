@@ -141,8 +141,9 @@ export default async function BookEventPage({
             classPerWeek={classPerWeek}
             step={step}
             initialDate={d}
-            teacherName={teacherName}
-          />
+            teacherName={teacherName} 
+            classCode={frequency}          
+            />
         </CardContent>
       </Card>
     </div>
