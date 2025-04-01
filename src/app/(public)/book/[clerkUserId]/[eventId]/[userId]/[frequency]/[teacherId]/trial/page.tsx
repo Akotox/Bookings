@@ -75,9 +75,15 @@ export default async function BookEventPage({
   });
   const endDate = endOfDay(addMonths(startDate, 2));
 
-  const frequencyInt = parseInt(frequency || "0", 10) || 0;
+  const v = getFrequencyValue(frequency)
 
-  const classPerWeek: number = getFrequencyValue(frequencyInt);
+  if (!v) {
+    return <NotFound message="Please book the correct class" />;
+  }
+
+  const frequencyInt = v.frequency;
+
+  const classPerWeek: number = v.classPerWeek;
 
   if (
     event.durationInMinutes === 60 &&
@@ -130,18 +136,17 @@ export default async function BookEventPage({
         </CardHeader>
         <CardContent>
           <MeetingForm
-            validTimes={validTimes}
-            eventId={event.id}
-            clerkUserId={clerkUserId}
-            isTrial={frequencyInt === 0 || frequencyInt === 1}
-            name={user.name}
-            email={user.email}
-            userId={userId}
-            teacherId={teacherId}
-            frequency={frequencyInt}
-            classPerWeek={classPerWeek}
-            teacherName={teacherName}
-          />
+              validTimes={validTimes}
+              eventId={event.id}
+              clerkUserId={clerkUserId}
+              isTrial={frequencyInt === 0 || frequencyInt === 1}
+              name={user.name}
+              email={user.email}
+              userId={userId}
+              teacherId={teacherId}
+              frequency={frequencyInt}
+              classPerWeek={classPerWeek}
+              teacherName={teacherName} />
         </CardContent>
       </Card>
     </div>

@@ -51,7 +51,7 @@ export function MeetingForm({
   classPerWeek,
   step,
   initialDate,
-  teacherName
+  teacherName,
 }: {
   validTimes: Date[];
   eventId: string;
@@ -66,6 +66,7 @@ export function MeetingForm({
   step?: string;
   initialDate?: string;
   teacherName: string;
+  
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -79,7 +80,7 @@ export function MeetingForm({
       classPerWeek: classPerWeek,
       isTrial: isTrial,
       step: parseInt(step! || "1", 10) || 1,
-      teacherName: teacherName
+      teacherName: teacherName,
     },
   });
 

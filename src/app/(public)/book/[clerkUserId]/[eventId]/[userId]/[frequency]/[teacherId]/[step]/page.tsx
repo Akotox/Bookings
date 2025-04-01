@@ -36,7 +36,7 @@ export const revalidate = 0;
 
 export default async function BookEventPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId, step },
-  searchParams: {d, count}
+  searchParams: { d },
 }: {
   params: {
     clerkUserId: string;
@@ -46,7 +46,7 @@ export default async function BookEventPage({
     teacherId: string;
     step: string;
   };
-   searchParams: { d: string | undefined, count: string | undefined }
+  searchParams: { d: string | undefined };
 }) {
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
@@ -77,9 +77,15 @@ export default async function BookEventPage({
   });
   const endDate = endOfDay(addMonths(startDate, 2));
 
-  const frequencyInt = parseInt(frequency || "0", 10) || 0;
+  const v = getFrequencyValue(frequency);
 
-  const classPerWeek: number = getFrequencyValue(frequencyInt)
+  if (!v) {
+    return <NotFound message="Please book the correct class" />;
+  }
+
+  const frequencyInt = v.frequency;
+
+  const classPerWeek: number = v.classPerWeek;
 
   if (
     event.durationInMinutes === 60 &&
@@ -134,8 +140,9 @@ export default async function BookEventPage({
             frequency={frequencyInt}
             classPerWeek={classPerWeek}
             step={step}
-            initialDate={d} 
-            teacherName={teacherName}            />
+            initialDate={d}
+            teacherName={teacherName}
+          />
         </CardContent>
       </Card>
     </div>

@@ -1,3 +1,4 @@
+import NotFound from "@/components/ui/404";
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
+import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { CheckCircle } from "lucide-react";
@@ -25,7 +27,13 @@ export default async function SuccessPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId },
   searchParams: { startTime },
 }: {
-  params: { clerkUserId: string; eventId: string, userId: string, frequency: string, teacherId: string };
+  params: {
+    clerkUserId: string;
+    eventId: string;
+    userId: string;
+    frequency: string;
+    teacherId: string;
+  };
   searchParams: { startTime: string };
 }) {
   const event = await db.query.EventTable.findFirst({
@@ -37,13 +45,20 @@ export default async function SuccessPage({
 
   const teacherName = await getTeacherName(teacherId);
 
-  const frequencyInt = parseInt(frequency || "0", 10) || 0;
+  const v = getFrequencyValue(frequency);
 
-  const session = frequencyInt === 0 || frequencyInt === 1 ? "Trial Session" : `${frequencyInt} Regular Sessions`;
-  
+  if (!v) {
+    return <NotFound message="Please book the correct class" />;
+  }
+
+  const frequencyInt = v.frequency;
+
+  const session =
+    frequencyInt === 0 || frequencyInt === 1
+      ? "Trial Session"
+      : `${frequencyInt} Regular Sessions`;
 
   if (teacherName == null) notFound();
-  
 
   const startTimeDate = new Date(startTime);
 

@@ -53,6 +53,7 @@ export async function createCalendarEvent({
   timezone,
   step,
   teacherName,
+  pck
 }: {
   clerkUserId: string;
   guestName: string;
@@ -66,6 +67,7 @@ export async function createCalendarEvent({
   timezone: string;
   step?: number;
   teacherName: string;
+  pck: number
 }) {
   const oAuthClient = await getOAuthClient(clerkUserId);
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
@@ -73,17 +75,13 @@ export async function createCalendarEvent({
     throw new Error('Clerk user has no email');
   }
 
-  const divider: number = 
-  frequency === 8 || frequency === 32 || frequency === 72 ? 2 :  
-  frequency === 12 || frequency === 36 || frequency === 96 ? 3 : 
-  1;
 
   const dayOfWeek = getDay(startTime);
   const daysOfWeek = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
   const dayAbbreviation = daysOfWeek[dayOfWeek];
 
 
-  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/divider)}`;
+  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/pck)}`;
 
 
   const calendarEvent = await google.calendar('v3').events.insert({
