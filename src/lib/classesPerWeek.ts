@@ -4,12 +4,12 @@ export const frequencyMapping: any = {
     4: 1, // 1 class/week for 1 month
     8: 2, // 2 classes/week for 1 month
     12: 3, // 3 classes/week for 1 month
-    24: 1, // 1 class/week for 3 months
-    32: 2, // 2 classes/week for 3 months
+    13: 1, // 1 class/week for 3 months
+    24: 2, // 2 classes/week for 3 months
     36: 3, // 3 classes/week for 3 months
-    48: 1, // 1 class/week for 1 year
-    72: 2, // 2 classes/week for 1 year
-    96: 3, // 3 classes/week for 1 year
+    52: 1, // 1 class/week for 1 year
+    104: 2, // 2 classes/week for 1 year
+    156: 3, // 3 classes/week for 1 year
   };
 
   export function getFrequencyValue(frequency: number): number {

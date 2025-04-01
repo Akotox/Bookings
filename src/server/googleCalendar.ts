@@ -118,7 +118,16 @@ export async function createCalendarEvent({
           { method: 'popup', minutes: 60 },
         ],
       },
+      conferenceData: {
+        createRequest: {
+          requestId: crypto.randomUUID(), // Generate a unique request ID
+          conferenceSolutionKey: {
+            type: 'hangoutsMeet',
+          },
+        },
+      },
     },
+    conferenceDataVersion: 1, // Important to include conferenceDataVersion
   });
 
   return calendarEvent.data;

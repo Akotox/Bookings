@@ -285,6 +285,8 @@ model Meeting {
   googleMeetUrl   String?
   status          MeetingStatus @default(PENDING)
   price           Float
+  eventId         String?
+  duration        Int @default(60)
   subscriptionId  String?
   description     String?
   teacherEmail    String?

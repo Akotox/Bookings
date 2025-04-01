@@ -8,6 +8,8 @@ import { createCalendarEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
+import { Meeting, MeetingStatus } from "@prisma/client"
+import { addDays } from "date-fns"
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
@@ -31,8 +33,17 @@ export async function createMeeting(
   const validTimes = await getValidTimesFromSchedule([startInTimezone], event)
   if (validTimes.length === 0) return { error: true }
 
+  const ti = await db.query.ScheduleTable.findFirst({
+    where: ({ clerkUserId }, { eq, and }) =>
+      and(
+        eq(clerkUserId, data.clerkUserId),
+      ),
+  })
 
-  if(data.isTrial){
+  if (ti == null) return { error: true }
+
+
+  if (data.isTrial) {
     const res = await createCalendarEvent({
       ...data,
       startTime: startInTimezone,
@@ -42,9 +53,28 @@ export async function createMeeting(
       frequency: data.frequency
     })
 
-    console.log('====================================');
-    console.log(res);
-    console.log('====================================');
+
+    await prisma.meeting.create({
+      data: {
+        studentId: data.userId,
+        teacherId: data.teacherId,
+        date: new Date(res.start!.dateTime!),
+        startTime: new Date(res.start!.dateTime!),
+        endTime: new Date(res.end!.dateTime!),
+        googleMeetUrl: res.hangoutLink!,
+        status: MeetingStatus.SCHEDULED,
+        price: 0.0,
+        description: res!.description!,
+        teacherEmail: res.organizer!.email!,
+        title: res!.summary!,
+        studentTimeZone: data.timezone,
+        teacherTimeZone: ti.timezone,
+        teacherFinished: false,
+        studentFinished: false,
+        duration: event.durationInMinutes,
+        eventId: res.id
+      }
+    })
 
     await prisma.user.update({
       where: {
@@ -56,17 +86,16 @@ export async function createMeeting(
     })
 
     redirect(
-      `/book/${data.clerkUserId}/${
-        data.eventId
-      }/${
-        data.userId
+      `/book/${data.clerkUserId}/${data.eventId
+      }/${data.userId
       }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
   }
 
-  if (data.frequency === 4 || data.frequency === 24 || data.frequency === 48 ) {
-  
-    await createCalendarEvent({
+  if (data.frequency === 4 || data.frequency === 24 || data.frequency === 48) {
+   
+
+    const res = await createCalendarEvent({
       ...data,
       startTime: startInTimezone,
       durationInMinutes: event.durationInMinutes,
@@ -74,21 +103,50 @@ export async function createMeeting(
       isTrial: false,
       frequency: data.frequency
     })
+
+
+    let startDate = new Date(res.start!.dateTime!);
+
+    for (let i = 0; i < data.frequency; i++) {
+      await prisma.meeting.create({
+        data: {
+          studentId: data.userId,
+          teacherId: data.teacherId,
+          date: startDate,
+          startTime: startDate,
+          endTime: new Date(res.end!.dateTime!),
+          googleMeetUrl: res.hangoutLink!,
+          status: MeetingStatus.SCHEDULED,
+          price: 0.0,
+          description: res!.description!,
+          teacherEmail: res.organizer!.email!,
+          title: res!.summary!,
+          studentTimeZone: data.timezone,
+          teacherTimeZone: ti.timezone,
+          teacherFinished: false,
+          studentFinished: false,
+          duration: event.durationInMinutes,
+          eventId: res.id
+        },
+      });
+  
+     
+      startDate = addDays(startDate, 7);
+    }
+  
 
     redirect(
-      `/book/${data.clerkUserId}/${
-        data.eventId
-      }/${
-        data.userId
+      `/book/${data.clerkUserId}/${data.eventId
+      }/${data.userId
       }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
 
-   
+
   }
 
-  if (data.frequency === 8 ) {
-  
-    await createCalendarEvent({
+  if (data.frequency === 8) {
+
+    const res = await createCalendarEvent({
       ...data,
       startTime: startInTimezone,
       durationInMinutes: event.durationInMinutes,
@@ -97,27 +155,53 @@ export async function createMeeting(
       frequency: data.frequency
     })
 
-    if(data.step === 2){
+    let startDate = new Date(res.start!.dateTime!);
+
+    for (let i = 0; i < data.frequency/2; i++) {
+      await prisma.meeting.create({
+        data: {
+          studentId: data.userId,
+          teacherId: data.teacherId,
+          date: startDate,
+          startTime: startDate,
+          endTime: new Date(res.end!.dateTime!),
+          googleMeetUrl: res.hangoutLink!,
+          status: MeetingStatus.SCHEDULED,
+          price: 0.0,
+          description: res!.description!,
+          teacherEmail: res.organizer!.email!,
+          title: res!.summary!,
+          studentTimeZone: data.timezone,
+          teacherTimeZone: ti.timezone,
+          teacherFinished: false,
+          studentFinished: false,
+          duration: event.durationInMinutes,
+          eventId: res.id
+        },
+      });
+  
+     
+      startDate = addDays(startDate, 7);
+    }
+
+
+    if (data.step === 2) {
       redirect(
-        `/book/${data.clerkUserId}/${
-          data.eventId
-        }/${
-          data.userId
+        `/book/${data.clerkUserId}/${data.eventId
+        }/${data.userId
         }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
       )
     }
 
     redirect(
-      `/book/${data.clerkUserId}/${
-        data.eventId
-      }/${
-        data.userId
+      `/book/${data.clerkUserId}/${data.eventId
+      }/${data.userId
       }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
     )
   }
 
   if (data.frequency === 12) {
-  
+
     await createCalendarEvent({
       ...data,
       startTime: startInTimezone,
@@ -127,35 +211,29 @@ export async function createMeeting(
       frequency: data.frequency
     })
 
-    if(data.step === 2 && data.frequency === 12){
+    if (data.step === 2 && data.frequency === 12) {
       redirect(
-        `/book/${data.clerkUserId}/${
-          data.eventId
-        }/${
-          data.userId
+        `/book/${data.clerkUserId}/${data.eventId
+        }/${data.userId
         }/${data.frequency}/${data.teacherId}/3?d=${data.startTime.toISOString()}`
       )
     }
 
-    if(data.step === 3 && data.frequency === 12){
+    if (data.step === 3 && data.frequency === 12) {
       redirect(
-        `/book/${data.clerkUserId}/${
-          data.eventId
-        }/${
-          data.userId
+        `/book/${data.clerkUserId}/${data.eventId
+        }/${data.userId
         }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
       )
     }
-    
+
     redirect(
-      `/book/${data.clerkUserId}/${
-        data.eventId
-      }/${
-        data.userId
+      `/book/${data.clerkUserId}/${data.eventId
+      }/${data.userId
       }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
     )
   }
-  
 
-  
+
+
 }
