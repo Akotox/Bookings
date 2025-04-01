@@ -83,6 +83,7 @@ export function MeetingForm({
       isTrial: isTrial,
       step: parseInt(step! || "1", 10) || 1,
       teacherName: teacherName,
+      classCode: classCode,
     },
   });
 
