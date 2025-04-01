@@ -16,6 +16,7 @@ export async function createMeeting(
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
 
+
   if (!success) return { error: true }
 
   const event = await db.query.EventTable.findFirst({
@@ -88,7 +89,7 @@ export async function createMeeting(
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
   }
 
@@ -138,7 +139,7 @@ export async function createMeeting(
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
 
 
@@ -189,14 +190,14 @@ export async function createMeeting(
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
       )
     }
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
     )
   }
 
@@ -244,7 +245,7 @@ export async function createMeeting(
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.frequency}/${data.teacherId}/3?d=${data.startTime.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/3?d=${data.startTime.toISOString()}`
       )
     }
 
@@ -252,14 +253,14 @@ export async function createMeeting(
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.frequency}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
       )
     }
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.frequency}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
     )
   }
 

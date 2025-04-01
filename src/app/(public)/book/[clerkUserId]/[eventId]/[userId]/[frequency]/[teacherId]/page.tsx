@@ -85,6 +85,7 @@ export default async function BookEventPage({
     const classPerWeek: number = v.classPerWeek;
 
 
+
   if (
     event.durationInMinutes === 60 &&
     hasTrial === true &&
@@ -138,7 +139,7 @@ export default async function BookEventPage({
             frequency={frequencyInt}
             classPerWeek={classPerWeek}
             teacherName={teacherName} 
-            />
+            classCode={frequency}            />
         </CardContent>
       </Card>
     </div>

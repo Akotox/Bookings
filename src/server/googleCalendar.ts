@@ -53,7 +53,7 @@ export async function createCalendarEvent({
   timezone,
   step,
   teacherName,
-  pck
+  classPerWeek
 }: {
   clerkUserId: string;
   guestName: string;
@@ -67,7 +67,7 @@ export async function createCalendarEvent({
   timezone: string;
   step?: number;
   teacherName: string;
-  pck: number
+  classPerWeek: number
 }) {
   const oAuthClient = await getOAuthClient(clerkUserId);
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
@@ -81,7 +81,7 @@ export async function createCalendarEvent({
   const dayAbbreviation = daysOfWeek[dayOfWeek];
 
 
-  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/pck)}`;
+  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/classPerWeek)}`;
 
 
   const calendarEvent = await google.calendar('v3').events.insert({

@@ -52,6 +52,7 @@ export function MeetingForm({
   step,
   initialDate,
   teacherName,
+  classCode,
 }: {
   validTimes: Date[];
   eventId: string;
@@ -66,6 +67,7 @@ export function MeetingForm({
   step?: string;
   initialDate?: string;
   teacherName: string;
+  classCode: string;
   
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
