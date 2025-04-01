@@ -75,7 +75,7 @@ export default async function BookEventPage({
   });
   const endDate = endOfDay(addMonths(startDate, 2));
 
-  const v = getFrequencyValue(frequency)
+  const v = getFrequencyValue(frequency);
 
   if (!v) {
     return <NotFound message="Please book the correct class" />;
@@ -115,7 +115,7 @@ export default async function BookEventPage({
   }
 
   return hasTrial === true ? (
-    <NotFound message="You don't have a trial class"/>
+    <NotFound message="You don't have a trial class" />
   ) : (
     <div>
       <Card className="max-w-4xl mx-auto">
@@ -131,22 +131,26 @@ export default async function BookEventPage({
             Book {event.name} with {teacherName}
           </CardTitle>
           {event.description && (
-            <CardDescription className="mb-12">{event.description}</CardDescription>
+            <CardDescription className="mb-12">
+              {event.description}
+            </CardDescription>
           )}
         </CardHeader>
         <CardContent>
           <MeetingForm
-              validTimes={validTimes}
-              eventId={event.id}
-              clerkUserId={clerkUserId}
-              isTrial={frequencyInt === 0 || frequencyInt === 1}
-              name={user.name}
-              email={user.email}
-              userId={userId}
-              teacherId={teacherId}
-              frequency={frequencyInt}
-              classPerWeek={classPerWeek}
-              teacherName={teacherName} />
+            validTimes={validTimes}
+            eventId={event.id}
+            clerkUserId={clerkUserId}
+            isTrial={frequencyInt === 0 || frequencyInt === 1}
+            name={user.name}
+            email={user.email}
+            userId={userId}
+            teacherId={teacherId}
+            frequency={frequencyInt}
+            classPerWeek={classPerWeek}
+            teacherName={teacherName}
+            classCode={frequency}
+          />
         </CardContent>
       </Card>
     </div>
