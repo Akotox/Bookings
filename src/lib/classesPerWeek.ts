@@ -11,7 +11,6 @@ export const frequencyMapping: Record<string, { classPerWeek: number; frequency:
   "Y_3": { classPerWeek: 3, frequency: 144 },  // Yearly: 3 classes/week → 144 lessons per year
 };
 
-// Function to get class frequency details
 export const getFrequencyValue = (key: string): { classPerWeek: number; frequency: number } | null => {
   return frequencyMapping[key] || null;
 };
