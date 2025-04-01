@@ -80,8 +80,15 @@ export async function createCalendarEvent({
   const daysOfWeek = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
   const dayAbbreviation = daysOfWeek[dayOfWeek];
 
+  const count = Math.floor(frequency/classPerWeek);
+  
 
-  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${Math.floor(frequency/classPerWeek)}`;
+
+  const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${count}`;
+
+  console.log('====================================');
+  console.log(recurrenceRule);
+  console.log('====================================');
 
 
   const calendarEvent = await google.calendar('v3').events.insert({
