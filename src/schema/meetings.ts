@@ -12,6 +12,7 @@ const meetingSchemaBase = z.object({
   step: z.number().default(1),
   teacherName: z.string().min(1, "Required"),
   classCode: z.string().min(1, "Required"),
+  price: z.number().min(0, "Required").default(0),
 })
 
 export const meetingFormSchema = z

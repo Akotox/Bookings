@@ -34,15 +34,6 @@ export async function createEvents(
     const trialEvent = data.find(event => event.title === "Trial Class")?.id;
     const regularEvent = data.find(event => event.title === "Regular Class")?.id;
 
-    console.log('====================================');
-    console.log(trialEvent);
-    console.log('====================================');
-
-    console.log('====================================');
-    console.log(regularEvent);
-    console.log('====================================');
-
-    
     await prisma.teacher.update({
       where: {
         id: teacherId

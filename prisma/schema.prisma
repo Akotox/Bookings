@@ -393,6 +393,7 @@ model ClassBundle {
   unitPrice    Float
   unitDiscount Int
   teacherId    String
+  classCode    String @default("TR")
   teacher      Teacher        @relation(fields: [teacherId], references: [id])
   Subscription Subscription[]
 }

@@ -138,19 +138,18 @@ export default async function BookEventPage({
         </CardHeader>
         <CardContent>
           <MeetingForm
-            validTimes={validTimes}
-            eventId={event.id}
-            clerkUserId={clerkUserId}
-            isTrial={frequencyInt === 0 || frequencyInt === 1}
-            name={user.name}
-            email={user.email}
-            userId={userId}
-            teacherId={teacherId}
-            frequency={frequencyInt}
-            classPerWeek={classPerWeek}
-            teacherName={teacherName}
-            classCode={frequency}
-          />
+              validTimes={validTimes}
+              eventId={event.id}
+              clerkUserId={clerkUserId}
+              isTrial={frequencyInt === 0 || frequencyInt === 1}
+              name={user.name}
+              email={user.email}
+              userId={userId}
+              teacherId={teacherId}
+              frequency={frequencyInt}
+              classPerWeek={classPerWeek}
+              teacherName={teacherName}
+              classCode={frequency} price={0}          />
         </CardContent>
       </Card>
     </div>

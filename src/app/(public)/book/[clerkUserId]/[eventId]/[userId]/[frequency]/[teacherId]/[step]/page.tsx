@@ -12,11 +12,13 @@ import {
 import { db } from "@/drizzle/db";
 import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
+import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
+import { ClassBundle } from "@prisma/client";
 import {
   addMonths,
   eachMinuteOfInterval,
@@ -87,6 +89,10 @@ export default async function BookEventPage({
 
   const classPerWeek: number = v.classPerWeek;
 
+  const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
+  
+  if (!bundle) return <NotFound message="Non existant class bundle" />;
+
   if (
     event.durationInMinutes === 60 &&
     hasTrial === true &&
@@ -141,9 +147,8 @@ export default async function BookEventPage({
             classPerWeek={classPerWeek}
             step={step}
             initialDate={d}
-            teacherName={teacherName} 
-            classCode={frequency}          
-            />
+            teacherName={teacherName}
+            classCode={frequency} price={bundle.price}            />
         </CardContent>
       </Card>
     </div>
