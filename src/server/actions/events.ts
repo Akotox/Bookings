@@ -3,6 +3,7 @@
 import { Events } from "@/components/ui/type_writer_demo"
 import { db } from "@/drizzle/db"
 import { EventTable } from "@/drizzle/schema"
+import { prisma } from "@/lib/prisma"
 import { eventFormSchema } from "@/schema/events"
 import { auth } from "@clerk/nextjs/server"
 import { and, eq } from "drizzle-orm"
@@ -11,7 +12,8 @@ import "use-server"
 import { z } from "zod"
 
 export async function createEvents(
-  eventsData: Events[]
+  eventsData: Events[],
+  teacherId: string
 ): Promise<{ error: boolean } | undefined> {
   const { userId } = auth();
 
@@ -24,7 +26,25 @@ export async function createEvents(
     clerkUserId: userId,
   }));
 
-  await db.insert(EventTable).values(eventsWithUser);
+   const data = await db.insert(EventTable).values(eventsWithUser).returning({ id: EventTable.id, title: EventTable.name });
+
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
+
+  //  if(data){
+  //   await prisma.teacher.update({
+  //     where: {
+  //       id: teacherId
+  //     },
+  //     data: {
+  //       clerkUsedId: userId,
+  //       trialEventId: data[0].id,
+  //       regularEventId: data[0].id
+  //     }
+  //   })
+  //  }
+
 
   redirect("/events");
 }

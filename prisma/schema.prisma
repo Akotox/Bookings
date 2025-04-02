@@ -8,7 +8,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-
 model Newsletter {
   id             String   @id @default(uuid())
   fullName       String
@@ -18,28 +17,28 @@ model Newsletter {
 }
 
 model TeacherEarnings {
-  id               String   @id @default(cuid())
-  teacherId        String
-  stripeId         String?
-  totalAmount      Decimal  @default(0)
-  withdrawable     Decimal  @default(0)
-  withdrawn        Decimal  @default(0)
-  balance          Decimal  @default(0)
-  createdAt        DateTime @default(now())
-  classCount       Int      @default(0)
+  id           String   @id @default(cuid())
+  teacherId    String
+  stripeId     String?
+  totalAmount  Decimal  @default(0)
+  withdrawable Decimal  @default(0)
+  withdrawn    Decimal  @default(0)
+  balance      Decimal  @default(0)
+  createdAt    DateTime @default(now())
+  classCount   Int      @default(0)
 
   transactions     TransactionRecord[]
   WithdrawalRecord WithdrawalRecord[]
 }
 
 model TransactionRecord {
-  id               String   @id @default(cuid())
+  id               String          @id @default(cuid())
   transactionType  TransactionType
   userId           String?
-  stripeInvoiceId  String?   @unique
+  stripeInvoiceId  String?         @unique
   stripeTransferId String?
-  amount           Decimal  @default(0)
-  createdAt        DateTime @default(now())
+  amount           Decimal         @default(0)
+  createdAt        DateTime        @default(now())
 
   teacherEarningsId String
   teacherEarnings   TeacherEarnings @relation(fields: [teacherEarningsId], references: [id])
@@ -63,13 +62,13 @@ model WithdrawalRecord {
 }
 
 model AffiliatePayOut {
-  id              String   @id @default(uuid())
-  token           String
-  amount          Decimal
-  client          String
-  status          PaymentStatus @default(PENDING)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  id        String        @id @default(uuid())
+  token     String
+  amount    Decimal
+  client    String
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 model User {
@@ -109,6 +108,9 @@ model Teacher {
   userId               String                @unique
   isStripeActive       StripeStatus          @default(INACTIVE)
   stripeTeacherAccount String?
+  trialEventId         String?
+  regularEventId       String?
+  clerkUsedId          String?
   schoolGrades         VietnameseGrades?
   vietnameseCourses    VietnameseCources?
   dateJoined           DateTime              @default(now())
@@ -134,10 +136,10 @@ model TeacherNotification {
 }
 
 model SyncScheduleApp {
-  id           String  @id @default(uuid())
-  clerkUserId  String  @unique
-  email        String  @unique
-  teacherId    String  @unique
+  id          String @id @default(uuid())
+  clerkUserId String @unique
+  email       String @unique
+  teacherId   String @unique
 }
 
 enum NotificationType {
@@ -147,15 +149,15 @@ enum NotificationType {
 }
 
 model Affiliate {
-  id        String @id @default(uuid())
-  firstName String
-  lastName  String
-  token     String
-  userId    String @unique
-  isStripeActive       StripeStatus          @default(INACTIVE)
-  stripeAccount String?
-  locale    String
-  User      User   @relation(fields: [userId], references: [id])
+  id             String       @id @default(uuid())
+  firstName      String
+  lastName       String
+  token          String
+  userId         String       @unique
+  isStripeActive StripeStatus @default(INACTIVE)
+  stripeAccount  String?
+  locale         String
+  User           User         @relation(fields: [userId], references: [id])
 }
 
 model Subscription {
@@ -286,7 +288,7 @@ model Meeting {
   status          MeetingStatus @default(PENDING)
   price           Float
   eventId         String?
-  duration        Int @default(60)
+  duration        Int           @default(60)
   subscriptionId  String?
   description     String?
   teacherEmail    String?
@@ -311,7 +313,7 @@ model MeetingTicket {
   description     String?
   teacherTimeZone String?
   meetingId       String?
-  totalPrice      Float       @default(0)
+  totalPrice      Float        @default(0)
   frequency       Int
   status          TicketStatus @default(PENDING)
   createdAt       DateTime     @default(now())
@@ -343,30 +345,30 @@ model Payment {
 }
 
 model Reschedule {
-  id         String   @id @default(cuid())
-  meetingId  String   @unique
-  date       DateTime
-  studentId  String
-  teacherId  String
-  month      Int
-  year       Int
-  status     RescheduleStatus @default(PENDING)
-  destination     Destination @default(TEACHER)
-  @@index([studentId, teacherId, month, year]) 
+  id          String           @id @default(cuid())
+  meetingId   String           @unique
+  date        DateTime
+  studentId   String
+  teacherId   String
+  month       Int
+  year        Int
+  status      RescheduleStatus @default(PENDING)
+  destination Destination      @default(TEACHER)
+
+  @@index([studentId, teacherId, month, year])
 }
 
 enum Destination {
   TEACHER
   STUDENT
 }
- 
+
 enum RescheduleStatus {
   PENDING
   APPROVED
   REVOKED
   COMPLETED
 }
-
 
 model messages {
   id           String   @id @default(uuid())

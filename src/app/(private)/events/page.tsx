@@ -94,7 +94,7 @@ export default async function EventsPage() {
         )
       ) : (
         <div className="flex flex-col items-center gap-4">
-          <TypewriterEffectSmoothDemo />
+          <TypewriterEffectSmoothDemo teacherId={teacherId} />
         </div>
       )}
     </>

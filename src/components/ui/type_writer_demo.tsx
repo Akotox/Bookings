@@ -4,14 +4,17 @@ import { createEvents } from "@/server/actions/events";
 import { MeetingTicket } from "../assets/logo";
 import { TypewriterEffectSmooth } from "./typer-writer-effect";
 
-export function TypewriterEffectSmoothDemo() {
+
+export function TypewriterEffectSmoothDemo({teacherId}: {
+  teacherId: string
+}) {
   const handleSubmit = async () => {
     const defaultEvents: Events[] = [
       {
         id: uuidv4(),
         name: "Regular Class",
         description:
-          "Users are permitted to take one trial class within a 2-week period of booking. To book a trial class, select an available slot from the schedule, confirm your details, and proceed with the booking. You will receive an email confirmation with further details upon successful booking.",
+          "You may schedule regular 60-minute classes, with the flexibility to choose a preferred day and time. The number of classes available to book is based on your active subscription. Subsequent classes will automatically recur at the same time each week.",
         durationInMinutes: 60,
         isActive: true,
       },
@@ -24,7 +27,7 @@ export function TypewriterEffectSmoothDemo() {
         isActive: true,
       },
     ];
-    await createEvents(defaultEvents);
+    await createEvents(defaultEvents,teacherId);
   };
   const words = [
     {
