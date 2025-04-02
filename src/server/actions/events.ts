@@ -26,24 +26,34 @@ export async function createEvents(
     clerkUserId: userId,
   }));
 
-   const data = await db.insert(EventTable).values(eventsWithUser).returning({ id: EventTable.id, title: EventTable.name });
+  const data = await db.insert(EventTable).values(eventsWithUser).returning({ id: EventTable.id, title: EventTable.name });
 
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
 
-  //  if(data){
-  //   await prisma.teacher.update({
-  //     where: {
-  //       id: teacherId
-  //     },
-  //     data: {
-  //       clerkUsedId: userId,
-  //       trialEventId: data[0].id,
-  //       regularEventId: data[0].id
-  //     }
-  //   })
-  //  }
+
+  if (data) {
+    const trialEvent = data.find(event => event.title === "Trial Class")?.id;
+    const regularEvent = data.find(event => event.title === "Regular Class")?.id;
+
+    console.log('====================================');
+    console.log(trialEvent);
+    console.log('====================================');
+
+    console.log('====================================');
+    console.log(regularEvent);
+    console.log('====================================');
+
+    
+    await prisma.teacher.update({
+      where: {
+        id: teacherId
+      },
+      data: {
+        clerkUsedId: userId,
+        trialEventId: trialEvent,
+        regularEventId: regularEvent
+      }
+    })
+  }
 
 
   redirect("/events");
