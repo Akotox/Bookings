@@ -53,7 +53,8 @@ export function MeetingForm({
   initialDate,
   teacherName,
   classCode,
-  price
+  price,
+  classBundleId
 }: {
   validTimes: Date[];
   eventId: string;
@@ -70,6 +71,7 @@ export function MeetingForm({
   teacherName: string;
   classCode: string;
   price: number;
+  classBundleId?: string;
   
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
@@ -86,7 +88,8 @@ export function MeetingForm({
       step: parseInt(step! || "1", 10) || 1,
       teacherName: teacherName,
       classCode: classCode,
-      price: price
+      price: price,
+      classBundleId: classBundleId
     },
   });
 
@@ -107,9 +110,6 @@ export function MeetingForm({
     });
 
     if (data?.error) {
-      console.log('====================================');
-      console.log(data?.error);
-      console.log('====================================');
       form.setError("root", {
         message: "There was an error saving your event",
       });

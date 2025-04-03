@@ -16,6 +16,7 @@ import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
+import { getSubscription } from "@/server/user/getSubscription";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
 import { ClassBundle } from "@prisma/client";
@@ -92,6 +93,10 @@ export default async function BookEventPage({
 
     if (!bundle) return <NotFound message="Non existant class bundle" />;
 
+    const subscription = await getSubscription(teacherId, userId, bundle.id)
+    
+    if (!subscription) <NotFound message="You do not have a pending subscription" />;
+
   if (
     event.durationInMinutes === 60 &&
     hasTrial === true &&
@@ -146,7 +151,8 @@ export default async function BookEventPage({
             classPerWeek={classPerWeek}
             teacherName={teacherName}
             classCode={frequency} 
-            price={bundle.price}            />
+            price={bundle.price}  
+            classBundleId={subscription?.id}          />
         </CardContent>
       </Card>
     </div>

@@ -469,6 +469,8 @@ enum SubscriptionStatus {
   ACTIVE
   CANCELED
   PAST_DUE
+  BOOKED
+  PENDING
 }
 
 enum LessonStatus {

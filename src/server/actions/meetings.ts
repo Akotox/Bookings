@@ -8,7 +8,7 @@ import { createCalendarEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
-import {  MeetingStatus } from "@prisma/client"
+import {  MeetingStatus, SubscriptionStatus } from "@prisma/client"
 import { addDays } from "date-fns"
 
 export async function createMeeting(
@@ -48,9 +48,6 @@ export async function createMeeting(
 
 
   if (data.isTrial) {
-    console.log('====================================');
-    console.log("Trial is hit");
-    console.log('====================================');
     try {
       const res = await createCalendarEvent({
         ...data,
@@ -120,6 +117,7 @@ export async function createMeeting(
     })
 
 
+
     let startDate = new Date(res.start!.dateTime!);
 
     let endDate = new Date(res.end!.dateTime!);
@@ -151,6 +149,17 @@ export async function createMeeting(
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
+
+    await prisma.subscription.update({
+      where: {
+        id: data.classBundleId,
+        teacherId: data.teacherId,
+        userId: data.userId
+      },
+      data: {
+        status: SubscriptionStatus.BOOKED
+      }
+    })
   
 
     redirect(
@@ -203,6 +212,17 @@ export async function createMeeting(
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
+
+    await prisma.subscription.update({
+      where: {
+        id: data.classBundleId,
+        teacherId: data.teacherId,
+        userId: data.userId
+      },
+      data: {
+        status: SubscriptionStatus.BOOKED
+      }
+    })
 
 
     if (data.step === 2) {
@@ -260,6 +280,17 @@ export async function createMeeting(
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
+
+    await prisma.subscription.update({
+      where: {
+        id: data.classBundleId,
+        teacherId: data.teacherId,
+        userId: data.userId
+      },
+      data: {
+        status: SubscriptionStatus.BOOKED
+      }
+    })
 
     if (data.step === 2 && data.frequency === 12) {
       redirect(

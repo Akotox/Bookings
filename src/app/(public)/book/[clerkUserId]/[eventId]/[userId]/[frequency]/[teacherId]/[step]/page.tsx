@@ -16,6 +16,7 @@ import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
+import { getSubscription } from "@/server/user/getSubscription";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
 import { ClassBundle } from "@prisma/client";
