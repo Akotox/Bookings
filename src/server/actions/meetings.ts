@@ -58,6 +58,9 @@ export async function createMeeting(
   console.log(ti);
   console.log('====================================');
 
+  console.log('====================================');
+  console.log(data.isTrial);
+  console.log('====================================');
 
   if (data.isTrial) {
     try {
