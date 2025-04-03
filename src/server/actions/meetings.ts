@@ -16,6 +16,11 @@ export async function createMeeting(
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
 
+  if (!success) {
+    console.log('====================================');
+    console.log(data);
+    console.log('====================================');
+  }
 
   if (!success) return { error: true }
 
@@ -28,7 +33,16 @@ export async function createMeeting(
       ),
   })
 
+  if (!event) {
+    console.log('====================================');
+    console.log(event);
+    console.log('====================================');
+  }
+
   if (event == null) return { error: true }
+
+
+
   const startInTimezone = fromZonedTime(data.startTime, data.timezone)
 
   const validTimes = await getValidTimesFromSchedule([startInTimezone], event)
@@ -53,6 +67,10 @@ export async function createMeeting(
       isTrial: true,
       frequency: data.frequency
     })
+
+    console.log('====================================');
+    console.log(res);
+    console.log('====================================');
 
 
     await prisma.meeting.create({

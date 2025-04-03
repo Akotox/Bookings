@@ -83,6 +83,10 @@ export default async function BookEventPage({
 
   const frequencyInt = v.frequency;
 
+  console.log('====================================');
+  console.log(frequencyInt);
+  console.log('====================================');
+
   const classPerWeek: number = v.classPerWeek;
 
   if (
@@ -149,7 +153,9 @@ export default async function BookEventPage({
               frequency={frequencyInt}
               classPerWeek={classPerWeek}
               teacherName={teacherName}
-              classCode={frequency} price={0}          />
+              classCode={frequency} 
+              price={0}         
+              />
         </CardContent>
       </Card>
     </div>

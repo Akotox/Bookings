@@ -16,12 +16,6 @@ export async function getClassBundle(tId: string, classCode: string): Promise<Cl
             return null;
         }
 
-        console.log('====================================');
-        console.log(classbundle);
-        console.log('====================================');
-
-
-
         return classbundle;
     } catch (error) {
         throw new Error(`Error fetching teacher: ${error}`);

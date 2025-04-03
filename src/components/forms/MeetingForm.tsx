@@ -107,6 +107,9 @@ export function MeetingForm({
     });
 
     if (data?.error) {
+      console.log('====================================');
+      console.log(data?.error);
+      console.log('====================================');
       form.setError("root", {
         message: "There was an error saving your event",
       });

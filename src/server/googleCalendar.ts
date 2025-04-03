@@ -126,8 +126,9 @@ export async function createCalendarEvent({
         },
       },
     },
-    conferenceDataVersion: 1, // Important to include conferenceDataVersion
+    conferenceDataVersion: 1, 
   });
+
 
   return calendarEvent.data;
 }
