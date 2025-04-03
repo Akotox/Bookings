@@ -82,8 +82,15 @@ export async function createCalendarEvent({
 
   const count = Math.floor(frequency/classPerWeek);
 
+  console.log('====================================');
+  console.log(count);
+  console.log('====================================');
+
   const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${count}`;
 
+  console.log('====================================');
+  console.log(recurrenceRule);
+  console.log('====================================');
 
   const calendarEvent = await google.calendar('v3').events.insert({
     calendarId: 'primary',

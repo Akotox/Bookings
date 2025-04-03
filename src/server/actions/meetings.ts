@@ -16,10 +16,6 @@ export async function createMeeting(
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
 
- console.log('====================================');
- console.log(data);
- console.log('====================================');
-
   if (!success) return { error: true }
 
   const event = await db.query.EventTable.findFirst({
@@ -34,10 +30,6 @@ export async function createMeeting(
 
 
   if (event == null) return { error: true }
-
-  console.log('====================================');
-  console.log(event);
-  console.log('====================================');
 
 
   const startInTimezone = fromZonedTime(data.startTime, data.timezone)
@@ -54,15 +46,11 @@ export async function createMeeting(
 
   if (ti == null) return { error: true }
 
-  console.log('====================================');
-  console.log(ti);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log(data.isTrial);
-  console.log('====================================');
 
   if (data.isTrial) {
+    console.log('====================================');
+    console.log("Trial is hit");
+    console.log('====================================');
     try {
       const res = await createCalendarEvent({
         ...data,
@@ -73,9 +61,6 @@ export async function createMeeting(
         frequency: data.frequency
       })
 
-      console.log('====================================');
-      console.log(res);
-      console.log('====================================');
 
       await prisma.meeting.create({
         data: {
@@ -86,7 +71,7 @@ export async function createMeeting(
           endTime: new Date(res.end!.dateTime!),
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
-          price: 0.0,
+          price: data.price,
           description: res!.description!,
           teacherEmail: res.organizer!.email!,
           title: res!.summary!,
@@ -114,10 +99,6 @@ export async function createMeeting(
       console.log('====================================');
     }
     
-
-
-
-
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
