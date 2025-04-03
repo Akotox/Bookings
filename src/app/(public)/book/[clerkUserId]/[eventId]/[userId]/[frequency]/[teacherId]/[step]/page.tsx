@@ -148,7 +148,9 @@ export default async function BookEventPage({
             step={step}
             initialDate={d}
             teacherName={teacherName}
-            classCode={frequency} price={bundle.price}            />
+            classCode={frequency} 
+            price={bundle.price}          
+           />
         </CardContent>
       </Card>
     </div>

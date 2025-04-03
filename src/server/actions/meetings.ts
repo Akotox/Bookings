@@ -16,11 +16,9 @@ export async function createMeeting(
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
 
-  if (!success) {
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
-  }
+ console.log('====================================');
+ console.log(data);
+ console.log('====================================');
 
   if (!success) return { error: true }
 
@@ -33,14 +31,13 @@ export async function createMeeting(
       ),
   })
 
-  if (!event) {
-    console.log('====================================');
-    console.log(event);
-    console.log('====================================');
-  }
+
 
   if (event == null) return { error: true }
 
+  console.log('====================================');
+  console.log(event);
+  console.log('====================================');
 
 
   const startInTimezone = fromZonedTime(data.startTime, data.timezone)
@@ -57,52 +54,67 @@ export async function createMeeting(
 
   if (ti == null) return { error: true }
 
+  console.log('====================================');
+  console.log(ti);
+  console.log('====================================');
+
 
   if (data.isTrial) {
-    const res = await createCalendarEvent({
-      ...data,
-      startTime: startInTimezone,
-      durationInMinutes: event.durationInMinutes,
-      eventName: event.name,
-      isTrial: true,
-      frequency: data.frequency
-    })
+    try {
+      const res = await createCalendarEvent({
+        ...data,
+        startTime: startInTimezone,
+        durationInMinutes: event.durationInMinutes,
+        eventName: event.name,
+        isTrial: true,
+        frequency: data.frequency
+      })
 
-    console.log('====================================');
-    console.log(res);
-    console.log('====================================');
+      console.log('====================================');
+      console.log(res);
+      console.log('====================================');
+
+      await prisma.meeting.create({
+        data: {
+          studentId: data.userId,
+          teacherId: data.teacherId,
+          date: new Date(res.start!.dateTime!),
+          startTime: new Date(res.start!.dateTime!),
+          endTime: new Date(res.end!.dateTime!),
+          googleMeetUrl: res.hangoutLink!,
+          status: MeetingStatus.SCHEDULED,
+          price: 0.0,
+          description: res!.description!,
+          teacherEmail: res.organizer!.email!,
+          title: res!.summary!,
+          studentTimeZone: data.timezone,
+          teacherTimeZone: ti.timezone,
+          teacherFinished: false,
+          studentFinished: false,
+          duration: event.durationInMinutes,
+          eventId: res.id
+        }
+      })
+  
+      await prisma.user.update({
+        where: {
+          id: data.userId
+        },
+        data: {
+          hasUsedFreeTrial: true
+        }
+      })
+  
+    } catch (error) {
+      console.log('====================================');
+      console.log(error);
+      console.log('====================================');
+    }
+    
 
 
-    await prisma.meeting.create({
-      data: {
-        studentId: data.userId,
-        teacherId: data.teacherId,
-        date: new Date(res.start!.dateTime!),
-        startTime: new Date(res.start!.dateTime!),
-        endTime: new Date(res.end!.dateTime!),
-        googleMeetUrl: res.hangoutLink!,
-        status: MeetingStatus.SCHEDULED,
-        price: 0.0,
-        description: res!.description!,
-        teacherEmail: res.organizer!.email!,
-        title: res!.summary!,
-        studentTimeZone: data.timezone,
-        teacherTimeZone: ti.timezone,
-        teacherFinished: false,
-        studentFinished: false,
-        duration: event.durationInMinutes,
-        eventId: res.id
-      }
-    })
 
-    await prisma.user.update({
-      where: {
-        id: data.userId
-      },
-      data: {
-        hasUsedFreeTrial: true
-      }
-    })
+
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
