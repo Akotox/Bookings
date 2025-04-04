@@ -16,6 +16,7 @@ import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
+import { getFirstStageClassBooking } from "@/server/user/getFirstStageClassBooking";
 import { getSubscription } from "@/server/user/getSubscription";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -39,6 +40,7 @@ export const revalidate = 0;
 
 export default async function BookEventPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId },
+  searchParams: { bookingId },
 }: {
   params: {
     clerkUserId: string;
@@ -47,6 +49,7 @@ export default async function BookEventPage({
     frequency: string;
     teacherId: string;
   };
+  searchParams: { bookingId: string };
 }) {
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
@@ -68,6 +71,9 @@ export default async function BookEventPage({
 
   if (!teacherName) return <NotFound message="Teacher not found" />;
 
+  const classBooking = await getFirstStageClassBooking(bookingId);
+
+  if (!classBooking) return <NotFound message="Class booking not found" />;
 
 
   const hasTrial: boolean = await checkTrial(userId);
@@ -96,6 +102,8 @@ export default async function BookEventPage({
     const subscription = await getSubscription(teacherId, userId, bundle.id)
     
     if (!subscription) <NotFound message="You do not have a pending subscription" />;
+
+    if (classBooking.createdClassCount === frequencyInt) <NotFound message="You have already booked this class" />;
 
   if (
     event.durationInMinutes === 60 &&

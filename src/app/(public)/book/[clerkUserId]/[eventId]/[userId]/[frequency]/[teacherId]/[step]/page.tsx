@@ -16,6 +16,7 @@ import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
+import { getFirstStageClassBooking } from "@/server/user/getFirstStageClassBooking";
 import { getSubscription } from "@/server/user/getSubscription";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -39,7 +40,7 @@ export const revalidate = 0;
 
 export default async function BookEventPage({
   params: { clerkUserId, eventId, userId, frequency, teacherId, step },
-  searchParams: { d },
+  searchParams: { d, bookingId },
 }: {
   params: {
     clerkUserId: string;
@@ -49,7 +50,7 @@ export default async function BookEventPage({
     teacherId: string;
     step: string;
   };
-  searchParams: { d: string | undefined };
+  searchParams: { d: string | undefined, bookingId: string };
 }) {
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
@@ -93,6 +94,20 @@ export default async function BookEventPage({
   const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
   
   if (!bundle) return <NotFound message="Non existant class bundle" />;
+
+  const classBooking = await getFirstStageClassBooking(bookingId);
+  
+  if (!classBooking) return <NotFound message="Class booking not found" />;
+
+  const stepInt = parseInt(step);
+
+  if (stepInt === 2 && classBooking.createdClassCount >= frequencyInt) {
+    return <NotFound message="You have already booked this class" />;
+  }
+  
+  if (stepInt === 3 && classBooking.createdClassCount >= frequencyInt) {
+    return <NotFound message="You have already booked this class" />;
+  }
 
   if (
     event.durationInMinutes === 60 &&
@@ -150,7 +165,8 @@ export default async function BookEventPage({
             initialDate={d}
             teacherName={teacherName}
             classCode={frequency} 
-            price={bundle.price}          
+            price={bundle.price} 
+            bookingId={bookingId}         
            />
         </CardContent>
       </Card>

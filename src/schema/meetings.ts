@@ -7,6 +7,7 @@ const meetingSchemaBase = z.object({
   guestName: z.string().min(1, "Required"),
   guestNotes: z.string().optional(),
   classBundleId: z.string().optional(),
+  bookingId: z.string().optional(),
   timezone: z.string().min(1, "Required"),
   classPerWeek: z.number().min(1, "Required"),
   isTrial: z.boolean().default(false),
