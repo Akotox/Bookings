@@ -10,17 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
-import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
-import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
-import { checkTrial } from "@/server/user/checkTrial";
-import { getFirstStageClassBooking } from "@/server/user/getFirstStageClassBooking";
-import { getSubscription } from "@/server/user/getSubscription";
+import { getTeacherClerkId } from "@/server/user/getTeacherClerkId";
 import { getUser } from "@/server/user/getUser";
 import { clerkClient } from "@clerk/nextjs/server";
-import { ClassBundle } from "@prisma/client";
 import {
   addMonths,
   eachMinuteOfInterval,
@@ -32,39 +27,45 @@ import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Book a class",
+    title: "Reschedule a class",
   };
 }
 
 export const revalidate = 0;
 
-export default async function BookEventPage({
-  params: { clerkUserId, eventId, userId, frequency, teacherId, step },
-  searchParams: { d, bookingId },
+export default async function RescheduleEventPage({
+  params: { teacherId, userId, meetingId },
 }: {
   params: {
-    clerkUserId: string;
-    eventId: string;
-    userId: string;
-    frequency: string;
     teacherId: string;
-    step: string;
+    userId: string;
+    meetingId: string;
   };
-  searchParams: { d: string | undefined, bookingId: string };
 }) {
+  const clerkUser = await getTeacherClerkId(teacherId);
+
+  if (!clerkUser) return <NotFound message="Teacher not found" />;
+
   const event = await db.query.EventTable.findFirst({
-    where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
-      and(eq(isActive, true), eq(userIdCol, clerkUserId), eq(id, eventId)),
+    where: ({ clerkUserId: userIdCol, isActive, name }, { eq, and }) =>
+      and(
+        eq(isActive, true),
+        eq(userIdCol, clerkUser.clerkUserId),
+        eq(name, "Regular Class")
+      ),
   });
+
 
   if (event == null)
     return <NotFound message="No events related to the proved information" />;
 
   const user = await getUser(userId);
 
+
   if (!user) return <NotFound message="User not found" />;
 
   const teacher = await getTeacher(teacherId);
+
 
   if (!teacher) return <NotFound message="Teacher not found" />;
 
@@ -72,72 +73,21 @@ export default async function BookEventPage({
 
   if (!teacherName) return <NotFound message="Teacher not found" />;
 
-  const hasTrial: boolean = await checkTrial(userId);
-
-  const calendarUser = await clerkClient().users.getUser(clerkUserId);
+  const calendarUser = await clerkClient().users.getUser(clerkUser.clerkUserId);
   const startDate = roundToNearestMinutes(new Date(), {
     nearestTo: 15,
     roundingMethod: "ceil",
   });
   const endDate = endOfDay(addMonths(startDate, 2));
 
-  const v = getFrequencyValue(frequency);
-
-  if (!v) {
-    return <NotFound message="Please book the correct class" />;
-  }
-
-  const frequencyInt = v.frequency;
-
-  const classPerWeek: number = v.classPerWeek;
-
-  const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
-  
-  if (!bundle) return <NotFound message="Non existant class bundle" />;
-
-  const classBooking = await getFirstStageClassBooking(bookingId);
-  
-  if (!classBooking) return <NotFound message="Class booking not found" />;
-
-  const stepInt = parseInt(step);
-
-  if (stepInt === 2 && classBooking.createdClassCount >= frequencyInt) {
-    return <NotFound message="You have already booked this class" />;
-  }
-  
-  if (stepInt === 3 && classBooking.createdClassCount >= frequencyInt) {
-    return <NotFound message="You have already booked this class" />;
-  }
-
-  if (
-    event.durationInMinutes === 60 &&
-    hasTrial === true &&
-    (frequencyInt === 0 || frequencyInt === 1)
-  ) {
-    return <NotFound message="Please book the correct class" />;
-  }
-
-  if (
-    (event.durationInMinutes === 30 &&
-      hasTrial === false &&
-      frequencyInt >= 2) ||
-    (event.durationInMinutes === 30 && hasTrial === true && frequencyInt > 1)
-  ) {
-    return <NotFound message="Please book the correct class" />;
-  }
-
   const validTimes = await getValidTimesFromSchedule(
-    eachMinuteOfInterval(
-      { start: startDate, end: endDate },
-      { step: frequencyInt === 0 || frequencyInt === 1 ? 30 : 60 }
-    ),
+    eachMinuteOfInterval({ start: startDate, end: endDate }, { step: 60 }),
     event
   );
 
   if (validTimes.length === 0) {
     return <NoTimeSlots event={event} calendarUser={calendarUser} />;
   }
-
 
   return (
     <div>
@@ -154,20 +104,20 @@ export default async function BookEventPage({
           <MeetingForm
             validTimes={validTimes}
             eventId={event.id}
-            clerkUserId={clerkUserId}
-            isTrial={frequencyInt === 0 || frequencyInt === 1 ? true : false}
+            clerkUserId={clerkUser.clerkUserId}
+            isTrial={false}
             name={user.name}
             email={user.email}
             userId={userId}
             teacherId={teacherId}
-            frequency={frequencyInt}
-            classPerWeek={classPerWeek}
-            step={step}
-            initialDate={d}
+            frequency={1}
+            classPerWeek={1}
             teacherName={teacherName}
-            classCode={frequency}
-            price={bundle.price}
-            bookingId={bookingId} isReschedule={false}           />
+            classCode=""
+            price={0}
+            classBundleId={meetingId}
+            isReschedule={true}
+          />
         </CardContent>
       </Card>
     </div>

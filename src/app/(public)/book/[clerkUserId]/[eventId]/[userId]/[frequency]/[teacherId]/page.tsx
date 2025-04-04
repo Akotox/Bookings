@@ -163,8 +163,7 @@ export default async function BookEventPage({
             classCode={frequency}
             price={bundle.price}
             classBundleId={subscription?.id}
-            bookingId={bookingId}
-          />
+            bookingId={bookingId} isReschedule={false}          />
         </CardContent>
       </Card>
     </div>

@@ -56,6 +56,7 @@ export function MeetingForm({
   price,
   classBundleId,
   bookingId,
+  isReschedule,
 }: {
   validTimes: Date[];
   eventId: string;
@@ -74,7 +75,7 @@ export function MeetingForm({
   price: number;
   classBundleId?: string;
   bookingId?: string;
-  
+  isReschedule: boolean
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -93,6 +94,7 @@ export function MeetingForm({
       price: price,
       classBundleId: classBundleId,
       bookingId: bookingId,
+      isReschedule: isReschedule
     },
   });
 

@@ -150,9 +150,8 @@ export default async function BookEventPage({
               frequency={frequencyInt}
               classPerWeek={classPerWeek}
               teacherName={teacherName}
-              classCode={frequency} 
-              price={0}         
-              />
+              classCode={frequency}
+              price={0} isReschedule={false}              />
         </CardContent>
       </Card>
     </div>

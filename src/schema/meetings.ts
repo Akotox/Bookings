@@ -15,6 +15,7 @@ const meetingSchemaBase = z.object({
   teacherName: z.string().min(1, "Required"),
   classCode: z.string().min(1, "Required"),
   price: z.number().min(0, "Required").default(0),
+  isReschedule:z.boolean().default(false),
 })
 
 export const meetingFormSchema = z
