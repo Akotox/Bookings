@@ -138,6 +138,18 @@ export default async function BookEventPage({
     return <NoTimeSlots event={event} calendarUser={calendarUser} />;
   }
 
+  console.log('====================================');
+  console.log("bookingId", bookingId);
+  console.log("step", step);
+  console.log("stepInt", stepInt);
+  console.log("classBooking", classBooking);
+  console.log("classBooking.createdClassCount", classBooking.createdClassCount);
+  console.log("frequencyInt", frequencyInt);
+  console.log("frequency", frequency);
+  console.log("bundle", bundle);
+  console.log("bundle.id", bundle.id);
+  console.log('====================================');
+
   return (
     <div>
       <Card className="max-w-4xl mx-auto">

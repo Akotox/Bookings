@@ -103,7 +103,7 @@ export default async function BookEventPage({
     
     if (!subscription) <NotFound message="You do not have a pending subscription" />;
 
-    if (classBooking.createdClassCount === frequencyInt) <NotFound message="You have already booked this class" />;
+    if (classBooking.createdClassCount >= frequencyInt) <NotFound message="You have already booked this class" />;
 
   if (
     event.durationInMinutes === 60 &&
@@ -121,6 +121,16 @@ export default async function BookEventPage({
   ) {
     return <NotFound message="Please book the correct class" />;
   }
+
+  console.log('====================================');
+  console.log("bookingId", bookingId);
+  console.log("classBooking", classBooking);
+  console.log("classBooking.createdClassCount", classBooking.createdClassCount);
+  console.log("frequencyInt", frequencyInt);
+  console.log("frequency", frequency);
+  console.log("bundle", bundle);
+  console.log("bundle.id", bundle.id);
+  console.log('====================================');
 
   const validTimes = await getValidTimesFromSchedule(
     eachMinuteOfInterval(
@@ -160,7 +170,9 @@ export default async function BookEventPage({
             teacherName={teacherName}
             classCode={frequency} 
             price={bundle.price}  
-            classBundleId={subscription?.id}          />
+            classBundleId={subscription?.id}         
+            bookingId={bookingId}
+           />
         </CardContent>
       </Card>
     </div>
