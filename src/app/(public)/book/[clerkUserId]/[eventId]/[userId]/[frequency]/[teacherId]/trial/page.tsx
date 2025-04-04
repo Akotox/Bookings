@@ -83,9 +83,6 @@ export default async function BookEventPage({
 
   const frequencyInt = v.frequency;
 
-  console.log('====================================');
-  console.log(frequencyInt);
-  console.log('====================================');
 
   const classPerWeek: number = v.classPerWeek;
 

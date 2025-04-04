@@ -44,6 +44,19 @@ model TransactionRecord {
   teacherEarnings   TeacherEarnings @relation(fields: [teacherEarningsId], references: [id])
 }
 
+model ClassBooking {
+  id            String   @id @default(cuid())
+  frequency     Int
+  classCode     String
+  clerkUserId   String
+  eventId       String
+  userId        String
+  teacherId     String
+  createdClassCount Int @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 enum TransactionType {
   EARNING
   WITHDRAWAL
