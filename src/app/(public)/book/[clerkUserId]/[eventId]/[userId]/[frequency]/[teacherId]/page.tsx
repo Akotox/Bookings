@@ -75,9 +75,6 @@ export default async function BookEventPage({
 
   if (!classBooking) return <NotFound message="Class booking not found" />;
 
-
-
-
   const hasTrial: boolean = await checkTrial(userId);
 
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
@@ -87,32 +84,24 @@ export default async function BookEventPage({
   });
   const endDate = endOfDay(addMonths(startDate, 2));
 
-    const v = getFrequencyValue(frequency)
-  
-    if (!v) {
-      return <NotFound message="Please book the correct class" />;
-    }
-  
-    const frequencyInt = v.frequency;
-  
-    const classPerWeek: number = v.classPerWeek;
+  const v = getFrequencyValue(frequency);
 
-    console.log('====================================');
-    console.log('Booking ID:', bookingId);
-    console.log('Class Booking:', classBooking);
-    console.log("is class valid", classBooking.createdClassCount);
-    console.log('Frequency:', frequencyInt);
-    console.log('====================================');
+  if (!v) {
+    return <NotFound message="Please book the correct class" />;
+  }
 
-    const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
+  const frequencyInt = v.frequency;
 
-    if (!bundle) return <NotFound message="Non existant class bundle" />;
+  const classPerWeek: number = v.classPerWeek;
 
-    const subscription = await getSubscription(teacherId, userId, bundle.id)
-    
-    if (!subscription) <NotFound message="You do not have a pending subscription" />;
+  const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
 
-    if (classBooking.createdClassCount === frequencyInt) <NotFound message="You have already booked this class" />;
+  if (!bundle) return <NotFound message="Non existant class bundle" />;
+
+  const subscription = await getSubscription(teacherId, userId, bundle.id);
+
+  if (!subscription)
+    <NotFound message="You do not have a pending subscription" />;
 
   if (
     event.durationInMinutes === 60 &&
@@ -143,6 +132,10 @@ export default async function BookEventPage({
     return <NoTimeSlots event={event} calendarUser={calendarUser} />;
   }
 
+  if (classBooking.createdClassCount >= frequencyInt) {
+    return <NotFound message="You have already booked this class" />;
+  }
+
   return (
     <div>
       <Card className="max-w-4xl mx-auto">
@@ -167,11 +160,11 @@ export default async function BookEventPage({
             frequency={frequencyInt}
             classPerWeek={classPerWeek}
             teacherName={teacherName}
-            classCode={frequency} 
-            price={bundle.price}  
-            classBundleId={subscription?.id}         
+            classCode={frequency}
+            price={bundle.price}
+            classBundleId={subscription?.id}
             bookingId={bookingId}
-           />
+          />
         </CardContent>
       </Card>
     </div>
