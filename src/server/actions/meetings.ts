@@ -105,61 +105,70 @@ export async function createMeeting(
   }
 
   if (data.frequency === 4 && data.classPerWeek === 1 || data.frequency === 12 && data.classPerWeek === 1 || data.frequency === 48 && data.classPerWeek === 1) {
-   
-
-    const res = await createCalendarEvent({
-      ...data,
-      startTime: startInTimezone,
-      durationInMinutes: event.durationInMinutes,
-      eventName: event.name,
-      isTrial: false,
-      frequency: data.frequency
-    })
-
-
-
-    let startDate = new Date(res.start!.dateTime!);
-
-    let endDate = new Date(res.end!.dateTime!);
-
-    for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
-      await prisma.meeting.create({
-        data: {
-          studentId: data.userId,
-          teacherId: data.teacherId,
-          date: startDate,
-          startTime: startDate,
-          endTime: endDate,
-          googleMeetUrl: res.hangoutLink!,
-          status: MeetingStatus.SCHEDULED,
-          price: data.frequency/data.frequency,
-          description: res!.description!,
-          teacherEmail: res.organizer!.email!,
-          title: res!.summary!,
-          studentTimeZone: data.timezone,
-          teacherTimeZone: ti.timezone,
-          teacherFinished: false,
-          studentFinished: false,
-          duration: event.durationInMinutes,
-          eventId: res.id
-        },
-      });
-  
-     
-      startDate = addDays(startDate, 7);
-      endDate = addDays(endDate, 7);
-    }
-
-    await prisma.subscription.update({
+    
+    const sub = await prisma.subscription.findFirst({
       where: {
-        id: data.classBundleId,
         teacherId: data.teacherId,
-        userId: data.userId
-      },
-      data: {
-        status: SubscriptionStatus.BOOKED
+        userId: data.userId,
+        status: SubscriptionStatus.PENDING
       }
     })
+
+    if(sub){
+      const res = await createCalendarEvent({
+        ...data,
+        startTime: startInTimezone,
+        durationInMinutes: event.durationInMinutes,
+        eventName: event.name,
+        isTrial: false,
+        frequency: data.frequency
+      })
+  
+  
+  
+      let startDate = new Date(res.start!.dateTime!);
+  
+      let endDate = new Date(res.end!.dateTime!);
+  
+      for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
+        await prisma.meeting.create({
+          data: {
+            studentId: data.userId,
+            teacherId: data.teacherId,
+            date: startDate,
+            startTime: startDate,
+            endTime: endDate,
+            googleMeetUrl: res.hangoutLink!,
+            status: MeetingStatus.SCHEDULED,
+            price: data.frequency/data.frequency,
+            description: res!.description!,
+            teacherEmail: res.organizer!.email!,
+            title: res!.summary!,
+            studentTimeZone: data.timezone,
+            teacherTimeZone: ti.timezone,
+            teacherFinished: false,
+            studentFinished: false,
+            duration: event.durationInMinutes,
+            eventId: res.id
+          },
+        });
+    
+       
+        startDate = addDays(startDate, 7);
+        endDate = addDays(endDate, 7);
+      }
+  
+      await prisma.subscription.update({
+        where: {
+          id: data.classBundleId,
+          teacherId: data.teacherId,
+          userId: data.userId
+        },
+        data: {
+          status: SubscriptionStatus.BOOKED
+        }
+      })
+    }
   
 
     redirect(
@@ -171,73 +180,83 @@ export async function createMeeting(
 
   }
 
-  if (data.frequency === 8 && data.classPerWeek === 2 || data.frequency === 24 && data.classPerWeek === 2 || data.frequency === 96 && data.classPerWeek === 2) {
-
-    const res = await createCalendarEvent({
-      ...data,
-      startTime: startInTimezone,
-      durationInMinutes: event.durationInMinutes,
-      eventName: event.name,
-      isTrial: false,
-      frequency: data.frequency
-    })
-
-    let startDate = new Date(res.start!.dateTime!);
-    let endDate = new Date(res.end!.dateTime!);
-
-    for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
-      await prisma.meeting.create({
-        data: {
-          studentId: data.userId,
+  if (
+    data.frequency === 8 && data.classPerWeek === 2 ||
+    data.frequency === 24 && data.classPerWeek === 2 ||
+    data.frequency === 96 && data.classPerWeek === 2
+  ) {
+  
+    if (data.step === 1) {
+      const sub = await prisma.subscription.findFirst({
+        where: {
           teacherId: data.teacherId,
-          date: startDate,
-          startTime: startDate,
-          endTime: endDate,
-          googleMeetUrl: res.hangoutLink!,
-          status: MeetingStatus.SCHEDULED,
-          price: data.frequency/data.frequency,
-          description: res!.description!,
-          teacherEmail: res.organizer!.email!,
-          title: res!.summary!,
-          studentTimeZone: data.timezone,
-          teacherTimeZone: ti.timezone,
-          teacherFinished: false,
-          studentFinished: false,
-          duration: event.durationInMinutes,
-          eventId: res.id
-        },
+          userId: data.userId,
+          status: SubscriptionStatus.PENDING
+        }
       });
   
-     
-      startDate = addDays(startDate, 7);
-      endDate = addDays(endDate, 7);
-    }
-
-    await prisma.subscription.update({
-      where: {
-        id: data.classBundleId,
-        teacherId: data.teacherId,
-        userId: data.userId
-      },
-      data: {
-        status: SubscriptionStatus.BOOKED
+      if (!sub) return; // only care about this for step 1
+  
+      const res = await createCalendarEvent({
+        ...data,
+        startTime: startInTimezone,
+        durationInMinutes: event.durationInMinutes,
+        eventName: event.name,
+        isTrial: false,
+        frequency: data.frequency
+      });
+  
+      let startDate = new Date(res.start!.dateTime!);
+      let endDate = new Date(res.end!.dateTime!);
+  
+      for (let i = 0; i < data.frequency / data.classPerWeek; i++) {
+        await prisma.meeting.create({
+          data: {
+            studentId: data.userId,
+            teacherId: data.teacherId,
+            date: startDate,
+            startTime: startDate,
+            endTime: endDate,
+            googleMeetUrl: res.hangoutLink!,
+            status: MeetingStatus.SCHEDULED,
+            price: 1,
+            description: res!.description!,
+            teacherEmail: res.organizer!.email!,
+            title: res!.summary!,
+            studentTimeZone: data.timezone,
+            teacherTimeZone: ti.timezone,
+            teacherFinished: false,
+            studentFinished: false,
+            duration: event.durationInMinutes,
+            eventId: res.id
+          },
+        });
+  
+        startDate = addDays(startDate, 7);
+        endDate = addDays(endDate, 7);
       }
-    })
-
-
-    if (data.step === 2) {
+  
       redirect(
-        `/book/${data.clerkUserId}/${data.eventId
-        }/${data.userId
-        }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
-      )
+        `/book/${data.clerkUserId}/${data.eventId}/${data.userId}/${data.classCode}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+      );
     }
-
-    redirect(
-      `/book/${data.clerkUserId}/${data.eventId
-      }/${data.userId
-      }/${data.classCode}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
-    )
+  
+    if (data.step === 2) {
+      await prisma.subscription.update({
+        where: {
+          id: data.classBundleId,
+          teacherId: data.teacherId,
+          userId: data.userId
+        },
+        data: {
+          status: SubscriptionStatus.BOOKED
+        }
+      });
+  
+      redirect(
+        `/book/${data.clerkUserId}/${data.eventId}/${data.userId}/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      );
+    }
   }
 
   if (data.frequency === 12 && data.classPerWeek === 3 || data.frequency === 36 && data.classPerWeek === 3 || data.frequency === 144 && data.classPerWeek === 3) {
