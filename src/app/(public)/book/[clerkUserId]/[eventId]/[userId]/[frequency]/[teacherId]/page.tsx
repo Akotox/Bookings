@@ -122,16 +122,6 @@ export default async function BookEventPage({
     return <NotFound message="Please book the correct class" />;
   }
 
-  console.log('====================================');
-  console.log("bookingId", bookingId);
-  console.log("classBooking", classBooking);
-  console.log("classBooking.createdClassCount", classBooking.createdClassCount);
-  console.log("frequencyInt", frequencyInt);
-  console.log("frequency", frequency);
-  console.log("bundle", bundle);
-  console.log("bundle.id", bundle.id);
-  console.log('====================================');
-
   const validTimes = await getValidTimesFromSchedule(
     eachMinuteOfInterval(
       { start: startDate, end: endDate },
