@@ -76,6 +76,8 @@ export default async function BookEventPage({
   if (!classBooking) return <NotFound message="Class booking not found" />;
 
 
+
+
   const hasTrial: boolean = await checkTrial(userId);
 
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
@@ -94,6 +96,13 @@ export default async function BookEventPage({
     const frequencyInt = v.frequency;
   
     const classPerWeek: number = v.classPerWeek;
+
+    console.log('====================================');
+    console.log('Booking ID:', bookingId);
+    console.log('Class Booking:', classBooking);
+    console.log("is class valid", classBooking.createdClassCount);
+    console.log('Frequency:', frequencyInt);
+    console.log('====================================');
 
     const bundle: ClassBundle | null = await getClassBundle(teacherId, frequency);
 
