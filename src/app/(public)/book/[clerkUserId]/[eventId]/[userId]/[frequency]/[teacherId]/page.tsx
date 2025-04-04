@@ -103,7 +103,7 @@ export default async function BookEventPage({
     
     if (!subscription) <NotFound message="You do not have a pending subscription" />;
 
-    if (classBooking.createdClassCount >= frequencyInt) <NotFound message="You have already booked this class" />;
+    if (classBooking.createdClassCount === frequencyInt) <NotFound message="You have already booked this class" />;
 
   if (
     event.durationInMinutes === 60 &&
