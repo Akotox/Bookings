@@ -165,6 +165,17 @@ export async function deleteSingleEvent(
 ) {
   const oAuthClient = await getOAuthClient(clerkUserId)
 
+  const timeMin = new Date(targetDate).toISOString()
+  const timeMax = new Date(targetDateEnd).toISOString()
+
+  console.log('====================================');
+  console.log(timeMin);
+  console.log('====================================');
+
+  console.log('====================================');
+  console.log(timeMax);
+  console.log('====================================');
+
   const instanceRes = await google.calendar("v3").events.instances({
     calendarId: 'primary',
     eventId: eventId,
