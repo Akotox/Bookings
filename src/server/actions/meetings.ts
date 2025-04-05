@@ -8,7 +8,7 @@ import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
-import {  MeetingStatus, RescheduleStatus, SubscriptionStatus } from "@prisma/client"
+import {  MeetingStatus, RescheduleStatus } from "@prisma/client"
 import { addDays } from "date-fns"
 
 export async function createMeeting(
