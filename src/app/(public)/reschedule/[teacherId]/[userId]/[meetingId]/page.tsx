@@ -85,6 +85,8 @@ export default async function RescheduleEventPage({
     event
   );
 
+  const desc: string = "You are rescheduling a regular 60-minute class. Choose a new preferred day and time that works for you. Your remaining classes will continue to follow this previous schedule each week, based on your active subscription."
+
   if (validTimes.length === 0) {
     return <NoTimeSlots event={event} calendarUser={calendarUser} />;
   }
@@ -97,7 +99,7 @@ export default async function RescheduleEventPage({
             Book {event.name} with {teacherName}
           </CardTitle>
           {event.description && (
-            <CardDescription>{event.description}</CardDescription>
+            <CardDescription>{desc}</CardDescription>
           )}
         </CardHeader>
         <CardContent>

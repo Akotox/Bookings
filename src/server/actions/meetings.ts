@@ -4,7 +4,7 @@ import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule"
 import { meetingActionSchema } from "@/schema/meetings"
 import "use-server"
 import { z } from "zod"
-import { createCalendarEvent } from "../googleCalendar"
+import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
@@ -106,14 +106,14 @@ export async function createMeeting(
 
   if (data.isReschedule) {
     try {
-      const res = await createCalendarEvent({
-        ...data, 
-        startTime: startInTimezone,
-        durationInMinutes: event.durationInMinutes,
-        eventName: event.name,
-        isTrial: false,
-        frequency: data.frequency
-      })
+      // const res = await createCalendarEvent({
+      //   ...data, 
+      //   startTime: startInTimezone,
+      //   durationInMinutes: event.durationInMinutes,
+      //   eventName: event.name,
+      //   isTrial: false,
+      //   frequency: data.frequency
+      // })
 
       const meeting = await prisma.meeting.findFirst({
         where: {
@@ -125,33 +125,37 @@ export async function createMeeting(
         console.log('====================================');
         console.log(meeting);
         console.log('====================================');
-        await prisma.meeting.create({
-          data: {
-            studentId: data.userId,
-            teacherId: data.teacherId,
-            date: new Date(res.start!.dateTime!),
-            startTime: new Date(res.start!.dateTime!),
-            endTime: new Date(res.end!.dateTime!),
-            googleMeetUrl: res.hangoutLink!,
-            status: MeetingStatus.SCHEDULED,
-            price:meeting.price,
-            description: res!.description!,
-            teacherEmail: res.organizer!.email!,
-            title: res!.summary!,
-            studentTimeZone: data.timezone,
-            teacherTimeZone: ti.timezone,
-            teacherFinished: false,
-            studentFinished: false,
-            duration: event.durationInMinutes,
-            eventId: res.id
-          }
-        })
+        // await prisma.meeting.create({
+        //   data: {
+        //     studentId: data.userId,
+        //     teacherId: data.teacherId,
+        //     date: new Date(res.start!.dateTime!),
+        //     startTime: new Date(res.start!.dateTime!),
+        //     endTime: new Date(res.end!.dateTime!),
+        //     googleMeetUrl: res.hangoutLink!,
+        //     status: MeetingStatus.SCHEDULED,
+        //     price:meeting.price,
+        //     description: res!.description!,
+        //     teacherEmail: res.organizer!.email!,
+        //     title: res!.summary!,
+        //     studentTimeZone: data.timezone,
+        //     teacherTimeZone: ti.timezone,
+        //     teacherFinished: false,
+        //     studentFinished: false,
+        //     duration: event.durationInMinutes,
+        //     eventId: res.id
+        //   }
+        // })
 
-        await prisma.meeting.delete({
-          where:  {
-            id: meeting.id
-          }
-        })
+
+        await deleteSingleEvent(data.clerkUserId, meeting.eventId!, meeting.startTime, meeting.endTime)
+        
+
+        // await prisma.meeting.delete({
+        //   where:  {
+        //     id: meeting.id
+        //   }
+        // })
       }
   
     } catch (error) {
@@ -161,11 +165,11 @@ export async function createMeeting(
     }
     
 
-    redirect(
-      `/book/${data.clerkUserId}/${data.eventId
-      }/${data.userId
-      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
-    )
+    // redirect(
+    //   `/reschedule/${data.clerkUserId}/${data.eventId
+    //   }/${data.userId
+    //   }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+    // )
   }
 
   if (data.frequency === 4 && data.classPerWeek === 1 || data.frequency === 12 && data.classPerWeek === 1 || data.frequency === 48 && data.classPerWeek === 1) {

@@ -156,3 +156,26 @@ async function getOAuthClient(clerkUserId: string) {
 
   return client
 }
+
+export async function deleteSingleEvent(
+  clerkUserId: string,
+  eventId: string,
+  targetDate: Date,
+  targetDateEnd: Date
+) {
+  const oAuthClient = await getOAuthClient(clerkUserId)
+
+  const instanceRes = await google.calendar("v3").events.instances({
+    calendarId: 'primary',
+    eventId: eventId,
+    auth: oAuthClient,
+    timeMin: new Date(targetDate).toISOString(),
+    timeMax: new Date(targetDateEnd).toISOString(), // within the same day ideally
+  });
+  
+  const instanceId = instanceRes.data.items?.[0]?.id;
+
+  console.log('====================================');
+  console.log(instanceId);
+  console.log('====================================');
+}
