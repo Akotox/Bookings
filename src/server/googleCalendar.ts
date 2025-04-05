@@ -110,7 +110,7 @@ export async function createCalendarEvent({
         dateTime: formatISO(addMinutes(startTime, durationInMinutes)),
         timeZone: timezone,
       },
-      summary: `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`,
+      summary: isReschedule ? `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`: `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`,
       recurrence: isTrial ? [] : isReschedule? []: [recurrenceRule],
       reminders: {
         useDefault: false,
@@ -162,31 +162,36 @@ export async function deleteSingleEvent(
   eventId: string,
   targetDate: Date,
   targetDateEnd: Date
-) {
-  const oAuthClient = await getOAuthClient(clerkUserId)
+): Promise<boolean> {
+  const oAuthClient = await getOAuthClient(clerkUserId);
 
-  const timeMin = new Date(targetDate).toISOString()
-  const timeMax = new Date(targetDateEnd).toISOString()
-
-  console.log('====================================');
-  console.log(timeMin);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log(timeMax);
-  console.log('====================================');
+  const timeMin = new Date(targetDate).toISOString();
+  const timeMax = new Date(targetDateEnd).toISOString();
 
   const instanceRes = await google.calendar("v3").events.instances({
     calendarId: 'primary',
-    eventId: eventId,
+    eventId,
     auth: oAuthClient,
-    timeMin: new Date(targetDate).toISOString(),
-    timeMax: new Date(targetDateEnd).toISOString(), // within the same day ideally
+    timeMin,
+    timeMax,
   });
-  
+
   const instanceId = instanceRes.data.items?.[0]?.id;
 
-  console.log('====================================');
-  console.log(instanceId);
-  console.log('====================================');
+  if (!instanceId) {
+    return false;
+  }
+
+  try {
+    await google.calendar("v3").events.delete({
+      calendarId: 'primary',
+      eventId: instanceId,
+      auth: oAuthClient,
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Failed to delete event instance:', error);
+    return false;
+  }
 }

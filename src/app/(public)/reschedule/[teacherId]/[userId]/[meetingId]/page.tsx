@@ -115,7 +115,7 @@ export default async function RescheduleEventPage({
             frequency={1}
             classPerWeek={1}
             teacherName={teacherName}
-            classCode=""
+            classCode="BB"
             price={0}
             classBundleId={meetingId}
             isReschedule={true}
