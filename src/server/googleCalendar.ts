@@ -110,7 +110,7 @@ export async function createCalendarEvent({
         dateTime: formatISO(addMinutes(startTime, durationInMinutes)),
         timeZone: timezone,
       },
-      summary: isReschedule ? `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`: `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`,
+      summary: isReschedule ? `This is a Study Buddy Reschedule Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`: `This is a Study Buddy Session between ${guestName} and Teacher ${teacherName} for a ${eventName.toLocaleLowerCase()}`,
       recurrence: isTrial ? [] : isReschedule? []: [recurrenceRule],
       reminders: {
         useDefault: false,

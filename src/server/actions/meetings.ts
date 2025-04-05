@@ -176,9 +176,8 @@ export async function createMeeting(
     
 
     redirect(
-      `/reschedule/${data.clerkUserId}/${data.eventId
-      }/${data.userId
-      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      `/reschedule/${data.teacherId}/${data.userId
+      }/${data.classBundleId!}/success?startTime=${data.startTime.toISOString()}`
     )
   }
 
@@ -243,7 +242,7 @@ export async function createMeeting(
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
 
 

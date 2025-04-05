@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
-import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
+import { getTeacherClerkId } from "@/server/user/getTeacherClerkId";
 import { CheckCircle } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -24,39 +24,32 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 0;
 
 export default async function SuccessPage({
-  params: { clerkUserId, eventId, userId, frequency, teacherId },
+  params: { teacherId, userId, meetingId },
   searchParams: { startTime },
 }: {
   params: {
-    clerkUserId: string;
-    eventId: string;
-    userId: string;
-    frequency: string;
     teacherId: string;
+    userId: string;
+    meetingId: string;
   };
   searchParams: { startTime: string };
 }) {
-  const event = await db.query.EventTable.findFirst({
-    where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
-      and(eq(isActive, true), eq(userIdCol, clerkUserId), eq(id, eventId)),
-  });
-
+  const clerkUser = await getTeacherClerkId(teacherId);
+  
+    if (!clerkUser) return <NotFound message="Teacher not found" />;
+  
+    const event = await db.query.EventTable.findFirst({
+      where: ({ clerkUserId: userIdCol, isActive, name }, { eq, and }) =>
+        and(
+          eq(isActive, true),
+          eq(userIdCol, clerkUser.clerkUserId),
+          eq(name, "Regular Class")
+        ),
+    });
+    
   if (event == null) notFound();
 
   const teacherName = await getTeacherName(teacherId);
-
-  const v = getFrequencyValue(frequency);
-
-  if (!v) {
-    return <NotFound message="Please book the correct class" />;
-  }
-
-  const frequencyInt = v.frequency;
-
-  const session =
-    frequencyInt === 0 || frequencyInt === 1
-      ? "Trial Session"
-      : `${frequencyInt} Regular Sessions`;
 
   if (teacherName == null) notFound();
 
@@ -69,7 +62,7 @@ export default async function SuccessPage({
           <CheckCircle className="w-12 h-12 text-green-500" />
         </div>
         <CardTitle className="text-xl font-semibold text-gray-900">
-          {`Successfully Booked ${session}!`}
+          {`Successfully Rescheduled Your Class`}
         </CardTitle>
         <CardDescription className="text-gray-600">
           {event.name} with {teacherName}
