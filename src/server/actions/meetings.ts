@@ -105,6 +105,9 @@ export async function createMeeting(
   }
 
   if (data.isReschedule) {
+    console.log('====================================');
+    console.log('Reschedule');
+    console.log('====================================');
     try {
       // const res = await createCalendarEvent({
       //   ...data, 
@@ -115,11 +118,19 @@ export async function createMeeting(
       //   frequency: data.frequency
       // })
 
+      console.log('====================================');
+      console.log(data.classBundleId!);
+      console.log('====================================');
+
       const meeting = await prisma.meeting.findFirst({
         where: {
-          id: data.classBundleId
+          id: data.classBundleId!
         }
       })
+
+      console.log('====================================');
+      console.log(meeting);
+      console.log('====================================');
 
       if(meeting){
         console.log('====================================');
