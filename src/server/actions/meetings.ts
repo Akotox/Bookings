@@ -104,6 +104,10 @@ export async function createMeeting(
     )
   }
 
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
+
   if (data.isReschedule) {
     try {
       const res = await createCalendarEvent({
@@ -120,6 +124,10 @@ export async function createMeeting(
           id: data.classBundleId!
         }
       })
+
+      console.log('====================================');
+      console.log(meeting);
+      console.log('====================================');
 
       if (meeting) {
         await prisma.meeting.create({
@@ -147,7 +155,9 @@ export async function createMeeting(
 
         const isDeleted = await deleteSingleEvent(data.clerkUserId, meeting.eventId!, meeting.startTime, meeting.endTime)
 
-
+      console.log('====================================');
+      console.log("isDeleted", isDeleted);
+      console.log('====================================');
 
         await prisma.reschedule.update({
           where: {

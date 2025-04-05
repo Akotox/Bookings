@@ -87,6 +87,10 @@ export async function createCalendarEvent({
 
   const recurrenceRule = `RRULE:FREQ=WEEKLY;BYDAY=${dayAbbreviation};COUNT=${count}`;
 
+  console.log('====================================');
+  console.log("Reschedule: ", isReschedule);
+  console.log('====================================');
+
 
   const calendarEvent = await google.calendar('v3').events.insert({
     calendarId: 'primary',
