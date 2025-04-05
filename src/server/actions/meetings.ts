@@ -8,7 +8,7 @@ import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { fromZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
-import {  MeetingStatus, RescheduleStatus } from "@prisma/client"
+import { MeetingStatus, RescheduleStatus } from "@prisma/client"
 import { addDays } from "date-fns"
 
 export async function createMeeting(
@@ -80,7 +80,7 @@ export async function createMeeting(
           eventId: res.id
         }
       })
-  
+
       await prisma.user.update({
         where: {
           id: data.userId
@@ -89,13 +89,13 @@ export async function createMeeting(
           hasUsedFreeTrial: true
         }
       })
-  
+
     } catch (error) {
       console.log('====================================');
       console.log(error);
       console.log('====================================');
     }
-    
+
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
@@ -107,7 +107,7 @@ export async function createMeeting(
   if (data.isReschedule) {
     try {
       const res = await createCalendarEvent({
-        ...data, 
+        ...data,
         startTime: startInTimezone,
         durationInMinutes: event.durationInMinutes,
         eventName: event.name,
@@ -121,7 +121,7 @@ export async function createMeeting(
         }
       })
 
-      if(meeting){
+      if (meeting) {
         await prisma.meeting.create({
           data: {
             studentId: data.userId,
@@ -131,7 +131,7 @@ export async function createMeeting(
             endTime: new Date(res.end!.dateTime!),
             googleMeetUrl: res.hangoutLink!,
             status: MeetingStatus.SCHEDULED,
-            price:meeting.price,
+            price: meeting.price,
             description: res!.description!,
             teacherEmail: res.organizer!.email!,
             title: res!.summary!,
@@ -146,34 +146,32 @@ export async function createMeeting(
 
 
         const isDeleted = await deleteSingleEvent(data.clerkUserId, meeting.eventId!, meeting.startTime, meeting.endTime)
-        
 
-        if(isDeleted) {
-         
 
-          await prisma.reschedule.update({
-            where: {
-              meetingId: meeting.id
-            },
-            data: {
-              status: RescheduleStatus.COMPLETED
-            }
-          })
 
-          await prisma.meeting.delete({
-            where: {
-              id: meeting.id
-            }
-          })
-        }
+        await prisma.reschedule.update({
+          where: {
+            meetingId: meeting.id
+          },
+          data: {
+            status: RescheduleStatus.COMPLETED
+          }
+        })
+
+        await prisma.meeting.delete({
+          where: {
+            id: meeting.id
+          }
+        })
+
       }
-  
+
     } catch (error) {
       console.log('====================================');
       console.log(error);
       console.log('====================================');
     }
-    
+
 
     redirect(
       `/reschedule/${data.teacherId}/${data.userId
@@ -182,7 +180,7 @@ export async function createMeeting(
   }
 
   if (data.frequency === 4 && data.classPerWeek === 1 || data.frequency === 12 && data.classPerWeek === 1 || data.frequency === 48 && data.classPerWeek === 1) {
-   
+
 
     const res = await createCalendarEvent({
       ...data,
@@ -199,7 +197,7 @@ export async function createMeeting(
 
     let endDate = new Date(res.end!.dateTime!);
 
-    for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
+    for (let i = 0; i < data.frequency / data.classPerWeek; i++) {
       await prisma.meeting.create({
         data: {
           studentId: data.userId,
@@ -209,7 +207,7 @@ export async function createMeeting(
           endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
-          price: data.frequency/data.frequency,
+          price: data.frequency / data.frequency,
           description: res!.description!,
           teacherEmail: res.organizer!.email!,
           title: res!.summary!,
@@ -221,8 +219,8 @@ export async function createMeeting(
           eventId: res.id
         },
       });
-  
-     
+
+
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
@@ -233,11 +231,11 @@ export async function createMeeting(
       },
       data: {
         createdClassCount: {
-          increment: data.frequency/data.classPerWeek,
+          increment: data.frequency / data.classPerWeek,
         }
       }
     })
-  
+
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
@@ -262,7 +260,7 @@ export async function createMeeting(
     let startDate = new Date(res.start!.dateTime!);
     let endDate = new Date(res.end!.dateTime!);
 
-    for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
+    for (let i = 0; i < data.frequency / data.classPerWeek; i++) {
       await prisma.meeting.create({
         data: {
           studentId: data.userId,
@@ -272,7 +270,7 @@ export async function createMeeting(
           endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
-          price: data.frequency/data.frequency,
+          price: data.frequency / data.frequency,
           description: res!.description!,
           teacherEmail: res.organizer!.email!,
           title: res!.summary!,
@@ -284,8 +282,8 @@ export async function createMeeting(
           eventId: res.id
         },
       });
-  
-     
+
+
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
@@ -296,7 +294,7 @@ export async function createMeeting(
       },
       data: {
         createdClassCount: {
-          increment: data.frequency/data.classPerWeek,
+          increment: data.frequency / data.classPerWeek,
         }
       }
     })
@@ -331,7 +329,7 @@ export async function createMeeting(
     let startDate = new Date(res.start!.dateTime!);
     let endDate = new Date(res.end!.dateTime!);
 
-    for (let i = 0; i < data.frequency/data.classPerWeek; i++) {
+    for (let i = 0; i < data.frequency / data.classPerWeek; i++) {
       await prisma.meeting.create({
         data: {
           studentId: data.userId,
@@ -341,7 +339,7 @@ export async function createMeeting(
           endTime: endDate,
           googleMeetUrl: res.hangoutLink!,
           status: MeetingStatus.SCHEDULED,
-          price: data.frequency/data.frequency,
+          price: data.frequency / data.frequency,
           description: res!.description!,
           teacherEmail: res.organizer!.email!,
           title: res!.summary!,
@@ -353,7 +351,7 @@ export async function createMeeting(
           eventId: res.id
         },
       });
-  
+
       startDate = addDays(startDate, 7);
       endDate = addDays(endDate, 7);
     }
@@ -364,12 +362,12 @@ export async function createMeeting(
       },
       data: {
         createdClassCount: {
-          increment: data.frequency/data.classPerWeek,
+          increment: data.frequency / data.classPerWeek,
         }
       }
     })
 
-    if (data.step === 2 && (data.frequency === 12|| data.frequency === 36 || data.frequency === 144)) {
+    if (data.step === 2 && (data.frequency === 12 || data.frequency === 36 || data.frequency === 144)) {
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
