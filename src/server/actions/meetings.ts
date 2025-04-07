@@ -47,7 +47,7 @@ export async function createMeeting(
   if (ti == null) return { error: true }
 
 
-  if (data.isTrial) {
+  if (data.isTrial && data.step === 1) {
     try {
       const res = await createCalendarEvent({
         ...data,
