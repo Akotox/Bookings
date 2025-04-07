@@ -81,6 +81,10 @@ export async function createMeeting(
         }
       })
 
+      console.log('====================================');
+      console.log(data.userId);
+      console.log('====================================');
+
       await prisma.user.update({
         where: {
           id: data.userId
@@ -94,6 +98,7 @@ export async function createMeeting(
       console.log('====================================');
       console.log(error);
       console.log('====================================');
+      return { error: true }
     }
 
 
@@ -104,9 +109,6 @@ export async function createMeeting(
     )
   }
 
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
 
   if (data.isReschedule) {
     try {
@@ -125,9 +127,6 @@ export async function createMeeting(
         }
       })
 
-      console.log('====================================');
-      console.log(meeting);
-      console.log('====================================');
 
       if (meeting) {
         await prisma.meeting.create({
@@ -155,9 +154,6 @@ export async function createMeeting(
 
         const isDeleted = await deleteSingleEvent(data.clerkUserId, meeting.eventId!, meeting.startTime, meeting.endTime)
 
-      console.log('====================================');
-      console.log("isDeleted", isDeleted);
-      console.log('====================================');
 
         await prisma.reschedule.update({
           where: {
