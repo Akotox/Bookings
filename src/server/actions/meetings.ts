@@ -15,8 +15,15 @@ export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
-
+  
+  console.log('====================================');
+  console.log("success" + success);
+  console.log('====================================');
   if (!success) return { error: true }
+
+  console.log('====================================');
+  console.log("data" + data);
+  console.log('====================================');
 
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId, isActive, id }, { eq, and }) =>
@@ -29,7 +36,10 @@ export async function createMeeting(
 
 
 
+
+
   if (event == null) return { error: true }
+
 
 
   const startInTimezone = fromZonedTime(data.startTime, data.timezone)
@@ -45,6 +55,10 @@ export async function createMeeting(
   })
 
   if (ti == null) return { error: true }
+
+  console.log('====================================');
+  console.log("event" + ti);
+  console.log('====================================');
 
 
   if (data.isTrial && data.step === 1) {
