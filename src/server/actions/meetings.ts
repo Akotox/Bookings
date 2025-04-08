@@ -72,6 +72,10 @@ export async function createMeeting(
         frequency: data.frequency
       })
 
+      console.log('====================================');
+      console.log(res);
+      console.log('====================================');
+
 
       await prisma.meeting.create({
         data: {
