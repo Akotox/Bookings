@@ -25,6 +25,14 @@ export async function createMeeting(
   console.log("data" + data);
   console.log('====================================');
 
+  console.log('====================================');
+  console.log("clerkUserId" + data.clerkUserId);
+  console.log('====================================');
+
+  console.log('====================================');
+  console.log("event" + data.eventId);
+  console.log('====================================');
+
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId, isActive, id }, { eq, and }) =>
       and(
@@ -34,8 +42,9 @@ export async function createMeeting(
       ),
   })
 
-
-
+  console.log('====================================');
+  console.log("event" + event);
+  console.log('====================================');
 
 
   if (event == null) return { error: true }
