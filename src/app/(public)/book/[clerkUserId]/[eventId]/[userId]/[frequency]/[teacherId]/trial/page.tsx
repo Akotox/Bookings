@@ -142,7 +142,7 @@ export default async function BookEventPage({
               validTimes={validTimes}
               eventId={event.id}
               clerkUserId={clerkUserId}
-              isTrial={frequencyInt === 0 || frequencyInt === 1}
+              isTrial={frequency === "TR" ? true : false}
               name={user.name}
               email={user.email}
               userId={userId}
