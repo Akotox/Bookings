@@ -16,26 +16,8 @@ export async function createMeeting(
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
   
-  console.log('====================================');
-  console.log("success" + success);
-  console.log('====================================');
   if (!success) return { error: true }
 
-  console.log('====================================');
-  console.log("data" + data);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log("clerkUserId" + data.clerkUserId);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log("event" + data.eventId);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log("event" + data.step);
-  console.log('====================================');
 
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId, isActive, id }, { eq, and }) =>
@@ -46,9 +28,6 @@ export async function createMeeting(
       ),
   })
 
-  console.log('====================================');
-  console.log("event" + event);
-  console.log('====================================');
 
 
   if (event == null) return { error: true }
@@ -72,9 +51,6 @@ export async function createMeeting(
 
   if (ti == null) return { error: true }
 
-  console.log('====================================');
-  console.log("event" + ti.timezone);
-  console.log('====================================');
 
 
   if (data.isTrial && data.step === 1) {
@@ -115,9 +91,6 @@ export async function createMeeting(
         }
       })
 
-      console.log('====================================');
-      console.log(data.userId);
-      console.log('====================================');
 
       await prisma.user.update({
         where: {
@@ -139,7 +112,7 @@ export async function createMeeting(
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
     )
   }
 
