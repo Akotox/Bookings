@@ -102,9 +102,7 @@ export async function createMeeting(
       })
 
     } catch (error) {
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
+      
       return { error: true }
     }
 
