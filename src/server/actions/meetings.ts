@@ -33,6 +33,10 @@ export async function createMeeting(
   console.log("event" + data.eventId);
   console.log('====================================');
 
+  console.log('====================================');
+  console.log("event" + data.step);
+  console.log('====================================');
+
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId, isActive, id }, { eq, and }) =>
       and(
