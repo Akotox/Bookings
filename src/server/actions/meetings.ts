@@ -253,7 +253,7 @@ export async function createMeeting(
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
     )
 
 
