@@ -47,7 +47,7 @@ export function MeetingForm({
   frequency,
   name,
   email,
-  isTrial = true,
+  isTrial,
   classPerWeek,
   step,
   initialDate,
