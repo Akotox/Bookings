@@ -12,7 +12,6 @@ import { db } from "@/drizzle/db";
 import { getFrequencyValue } from "@/lib/classesPerWeek";
 import { formatDateTime } from "@/lib/formatters";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
-import { clerkClient } from "@clerk/nextjs/server";
 import { CheckCircle } from "lucide-react";
 import { notFound } from "next/navigation";
 
