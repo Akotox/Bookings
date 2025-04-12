@@ -1,5 +1,4 @@
 import NotFound from "@/components/ui/404";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,

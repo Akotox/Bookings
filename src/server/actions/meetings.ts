@@ -6,10 +6,11 @@ import "use-server"
 import { z } from "zod"
 import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
-import { fromZonedTime } from "date-fns-tz"
+import { fromZonedTime, toZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
 import { MeetingStatus, RescheduleStatus } from "@prisma/client"
-import { addDays } from "date-fns"
+import { addDays, format, formatISO } from "date-fns"
+import {DateTime} from 'luxon';
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
@@ -32,9 +33,44 @@ export async function createMeeting(
 
   if (event == null) return { error: true }
 
+  const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
+
+  console.log('====================================');
+  console.log(formattedTime);
+  console.log('====================================');
+
+  console.log('====================================');
+  console.log( data.timezone);
+  console.log('====================================');
+
+// Step 2: Combine that with the selected timezone — assume the time is in the selected zone
+const zonedTime = DateTime.fromFormat(formattedTime, 'yyyy-MM-dd HH:mm:ss', {
+  zone: data.timezone,
+});
+
+console.log('====================================');
+console.log("Zoned Time"+ zonedTime);
+console.log('====================================');
 
 
-  const startInTimezone = fromZonedTime(data.startTime, data.timezone)
+
+  const startInTimezone = zonedTime.toJSDate();
+
+  console.log('====================================');
+  console.log("UTC "+startInTimezone);
+  console.log('====================================');
+
+    console.log('====================================');
+    console.log(formatISO(startInTimezone));
+    console.log('====================================');
+
+    const localized = DateTime.fromISO(formatISO(startInTimezone), { zone: data.timezone });
+
+console.log('====================================');
+console.log(localized.toString()); // Zoned version
+console.log('====================================');
+
+    
 
   // const validTimes = await getValidTimesFromSchedule([startInTimezone], event)
   // console.log('====================================');
@@ -64,9 +100,7 @@ export async function createMeeting(
         frequency: data.frequency
       })
 
-      console.log('====================================');
-      console.log(res);
-      console.log('====================================');
+      
 
 
       await prisma.meeting.create({
@@ -100,7 +134,6 @@ export async function createMeeting(
           hasUsedFreeTrial: true
         }
       })
-
     } catch (error) {
       
       return { error: true }
