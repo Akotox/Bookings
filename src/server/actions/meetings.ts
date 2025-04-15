@@ -6,7 +6,6 @@ import "use-server"
 import { z } from "zod"
 import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
-import { fromZonedTime, toZonedTime } from "date-fns-tz"
 import { prisma } from "@/lib/prisma"
 import { MeetingStatus, RescheduleStatus } from "@prisma/client"
 import { addDays, format, formatISO } from "date-fns"
@@ -34,6 +33,10 @@ export async function createMeeting(
   if (event == null) return { error: true }
 
   const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
+
+  console.log('====================================');
+  console.log("Original time "+ data.startTime);
+  console.log('====================================');
 
   console.log('====================================');
   console.log(formattedTime);

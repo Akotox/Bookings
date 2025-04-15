@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { createMeeting } from "@/server/actions/meetings";
+import { DateTime } from "luxon";
 
 export function MeetingForm({
   validTimes,
@@ -210,9 +211,10 @@ export function MeetingForm({
                 <FormLabel>Time</FormLabel>
                 <Select
                   disabled={date == null || timezone == null}
-                  onValueChange={(value) =>
-                    field.onChange(new Date(Date.parse(value)))
-                  }
+                  onValueChange={(value) => {
+                    const zoned = DateTime.fromISO(value, { zone: form.getValues("timezone") });
+                    field.onChange(zoned.toJSDate()); // or zoned.toUTC().toJSDate() depending on storage
+                  }}
                   defaultValue={field.value?.toISOString()}
                 >
                   <FormControl>
