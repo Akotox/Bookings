@@ -15,6 +15,10 @@ export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
+
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
   
   if (!success) return { error: true }
 
@@ -27,8 +31,6 @@ export async function createMeeting(
         eq(id, data.eventId)
       ),
   })
-
-
 
   if (event == null) return { error: true }
 
