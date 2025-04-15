@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma"
 import { MeetingStatus, RescheduleStatus } from "@prisma/client"
 import { addDays, format, formatISO } from "date-fns"
 import {DateTime} from 'luxon';
+import { toZonedTime } from "date-fns-tz"
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
@@ -37,6 +38,12 @@ export async function createMeeting(
   console.log('====================================');
   console.log("Original time "+ data.startTime);
   console.log('====================================');
+
+  const timeZone = 'Asia/Bangkok';
+const zonedDate = toZonedTime(data.startTime, timeZone);
+
+
+console.log("Converted time:", zonedDate);
 
   console.log('====================================');
   console.log(formattedTime);
