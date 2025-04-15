@@ -76,7 +76,7 @@ export function MeetingForm({
   price: number;
   classBundleId?: string;
   bookingId?: string;
-  isReschedule: boolean
+  isReschedule: boolean;
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -84,9 +84,9 @@ export function MeetingForm({
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       guestName: name,
       guestEmail: email,
-      guestNotes:  isTrial
-      ? "This session is a trial, so feel free to ask questions about our services and let us know your expectations. We want to ensure you get the most out of this experience."
-      : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
+      guestNotes: isTrial
+        ? "This session is a trial, so feel free to ask questions about our services and let us know your expectations. We want to ensure you get the most out of this experience."
+        : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
       classPerWeek: classPerWeek,
       isTrial: isTrial,
       step: parseInt(step! || "1", 10) || 1,
@@ -95,7 +95,7 @@ export function MeetingForm({
       price: price,
       classBundleId: classBundleId,
       bookingId: bookingId,
-      isReschedule: isReschedule
+      isReschedule: isReschedule,
     },
   });
 
@@ -136,11 +136,14 @@ export function MeetingForm({
         <FormField
           control={form.control}
           name="timezone"
-          
           render={({ field }) => (
             <FormItem>
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}  value={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
@@ -212,8 +215,17 @@ export function MeetingForm({
                 <Select
                   disabled={date == null || timezone == null}
                   onValueChange={(value) => {
-                    const zoned = DateTime.fromISO(value, { zone: form.getValues("timezone") });
-                    field.onChange(zoned.toJSDate()); // or zoned.toUTC().toJSDate() depending on storage
+                    const selectedZone = form.getValues("timezone");
+
+                    // Step 1: Parse in system local time (browser timezone)
+                    const localDateTime = DateTime.fromISO(value); // assumes local browser time
+
+                    // Step 2: Set the intended zone, keeping the same wall-clock time
+                    const zoned = localDateTime.setZone(selectedZone, {
+                      keepLocalTime: true,
+                    });
+
+                    field.onChange(zoned.toJSDate()); // Save correct Date in JS Date format
                   }}
                   defaultValue={field.value?.toISOString()}
                 >
@@ -268,11 +280,7 @@ export function MeetingForm({
               <FormItem className="flex-1">
                 <FormLabel>Your Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    {...field}
-                    disabled
-                  />
+                  <Input type="email" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -286,12 +294,7 @@ export function MeetingForm({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea
-                  className="resize-none"
-                  {...field}
-                
-                  disabled
-                />
+                <Textarea className="resize-none" {...field} disabled />
               </FormControl>
               <FormMessage />
             </FormItem>
