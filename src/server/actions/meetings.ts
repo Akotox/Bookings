@@ -70,13 +70,6 @@ console.log('====================================');
 console.log(localized.toString()); // Zoned version
 console.log('====================================');
 
-    
-
-  // const validTimes = await getValidTimesFromSchedule([startInTimezone], event)
-  // console.log('====================================');
-  // console.log(validTimes.length);
-  // console.log('====================================');
-  // if (validTimes.length === 0) return { error: true }
 
   const ti = await db.query.ScheduleTable.findFirst({
     where: ({ clerkUserId }, { eq, and }) =>
@@ -91,60 +84,59 @@ console.log('====================================');
 
   if (data.isTrial && data.step === 1) {
     try {
-      const res = await createCalendarEvent({
-        ...data,
-        startTime: startInTimezone,
-        durationInMinutes: event.durationInMinutes,
-        eventName: event.name,
-        isTrial: true,
-        frequency: data.frequency
-      })
-
-      
+      // const res = await createCalendarEvent({
+      //   ...data,
+      //   startTime: startInTimezone,
+      //   durationInMinutes: event.durationInMinutes,
+      //   eventName: event.name,
+      //   isTrial: true,
+      //   frequency: data.frequency
+      // })
 
 
-      await prisma.meeting.create({
-        data: {
-          studentId: data.userId,
-          teacherId: data.teacherId,
-          date: new Date(res.start!.dateTime!),
-          startTime: new Date(res.start!.dateTime!),
-          endTime: new Date(res.end!.dateTime!),
-          googleMeetUrl: res.hangoutLink!,
-          status: MeetingStatus.SCHEDULED,
-          price: data.price,
-          description: res!.description!,
-          teacherEmail: res.organizer!.email!,
-          title: res!.summary!,
-          studentTimeZone: data.timezone,
-          teacherTimeZone: ti.timezone,
-          teacherFinished: false,
-          studentFinished: false,
-          duration: event.durationInMinutes,
-          eventId: res.id
-        }
-      })
+      // await prisma.meeting.create({
+      //   data: {
+      //     studentId: data.userId,
+      //     teacherId: data.teacherId,
+      //     date: new Date(res.start!.dateTime!),
+      //     startTime: new Date(res.start!.dateTime!),
+      //     endTime: new Date(res.end!.dateTime!),
+      //     googleMeetUrl: res.hangoutLink!,
+      //     status: MeetingStatus.SCHEDULED,
+      //     price: data.price,
+      //     description: res!.description!,
+      //     teacherEmail: res.organizer!.email!,
+      //     title: res!.summary!,
+      //     studentTimeZone: data.timezone,
+      //     teacherTimeZone: ti.timezone,
+      //     teacherFinished: false,
+      //     studentFinished: false,
+      //     duration: event.durationInMinutes,
+      //     eventId: res.id
+      //   }
+      // })
 
 
-      await prisma.user.update({
-        where: {
-          id: data.userId
-        },
-        data: {
-          hasUsedFreeTrial: true
-        }
-      })
+      // await prisma.user.update({
+      //   where: {
+      //     id: data.userId
+      //   },
+      //   data: {
+      //     hasUsedFreeTrial: true
+      //   }
+      // })
+return;
     } catch (error) {
       
       return { error: true }
     }
 
 
-    redirect(
-      `/book/${data.clerkUserId}/${data.eventId
-      }/${data.userId
-      }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
-    )
+    // redirect(
+    //   `/book/${data.clerkUserId}/${data.eventId
+    //   }/${data.userId
+    //   }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
+    // )
   }
 
 
@@ -219,7 +211,7 @@ console.log('====================================');
 
     redirect(
       `/reschedule/${data.teacherId}/${data.userId
-      }/${data.classBundleId!}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classBundleId!}/reschedule/success?startTime=${data.startTime.toISOString()}`
     )
   }
 
