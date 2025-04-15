@@ -8,9 +8,8 @@ import { createCalendarEvent, deleteSingleEvent } from "../googleCalendar"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { MeetingStatus, RescheduleStatus } from "@prisma/client"
-import { addDays, format, formatISO } from "date-fns"
+import { addDays, format, formatISO, parse } from "date-fns"
 import {DateTime} from 'luxon';
-import { toZonedTime } from "date-fns-tz"
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
@@ -35,15 +34,25 @@ export async function createMeeting(
 
   const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
 
+  const parsedDate = parse(data.start, 'dd/MM/yyyy, HH:mm:ss', new Date(), );
+
+  const newFormated = format(parsedDate, 'yyyy-MM-dd HH:mm:ss');
+
   console.log('====================================');
-  console.log("Original time "+ data.startTime);
+  console.log("Parsed and formated" + newFormated);
   console.log('====================================');
 
-  const timeZone = 'Asia/Bangkok';
-const zonedDate = toZonedTime(data.startTime, timeZone);
+  const zonedParsedTime = DateTime.fromFormat(newFormated, 'yyyy-MM-dd HH:mm:ss', {
+    zone: data.timezone,
+  });
 
+  console.log('====================================');
+  console.log("Parsed Zoned and formated "+zonedParsedTime);
+  console.log('====================================');
 
-console.log("Converted time:", zonedDate);
+  console.log('====================================');
+  console.log("Browser Time"+ data.browserTimeZone);
+  console.log('====================================');
 
   console.log('====================================');
   console.log(formattedTime);
@@ -65,6 +74,7 @@ console.log('====================================');
 
 
   const startInTimezone = zonedTime.toJSDate();
+
 
   console.log('====================================');
   console.log("UTC "+startInTimezone);
@@ -135,7 +145,7 @@ console.log('====================================');
       //     hasUsedFreeTrial: true
       //   }
       // })
-return;
+      return;
     } catch (error) {
       
       return { error: true }
