@@ -105,18 +105,17 @@ console.log('Client timezone:', data.timezone);
           hasUsedFreeTrial: true
         }
       })
-      return;
     } catch (error) {
       
       return { error: true }
     }
 
 
-    // redirect(
-    //   `/book/${data.clerkUserId}/${data.eventId
-    //   }/${data.userId
-    //   }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
-    // )
+    redirect(
+      `/book/${data.clerkUserId}/${data.eventId
+      }/${data.userId
+      }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
+    )
   }
 
 
@@ -124,7 +123,7 @@ console.log('Client timezone:', data.timezone);
     try {
       const res = await createCalendarEvent({
         ...data,
-        startTime: startInTimezone,
+        startTime: data.start,
         durationInMinutes: event.durationInMinutes,
         eventName: event.name,
         isTrial: false,
@@ -266,7 +265,7 @@ console.log('Client timezone:', data.timezone);
 
     const res = await createCalendarEvent({
       ...data,
-      startTime: startInTimezone,
+      startTime: data.start,
       durationInMinutes: event.durationInMinutes,
       eventName: event.name,
       isTrial: false,
