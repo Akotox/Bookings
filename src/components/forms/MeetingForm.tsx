@@ -76,7 +76,7 @@ export function MeetingForm({
   price: number;
   classBundleId?: string;
   bookingId?: string;
-  isReschedule: boolean
+  isReschedule: boolean;
 }) {
   const form = useForm<z.infer<typeof meetingFormSchema>>({
     resolver: zodResolver(meetingFormSchema),
@@ -84,9 +84,9 @@ export function MeetingForm({
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       guestName: name,
       guestEmail: email,
-      guestNotes:  isTrial
-      ? "This session is a trial, so feel free to ask questions about our services and let us know your expectations. We want to ensure you get the most out of this experience."
-      : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
+      guestNotes: isTrial
+        ? "This session is a trial, so feel free to ask questions about our services and let us know your expectations. We want to ensure you get the most out of this experience."
+        : "This is a regular session, and we’ll be focusing on the planned classes and topics.",
       classPerWeek: classPerWeek,
       isTrial: isTrial,
       step: parseInt(step! || "1", 10) || 1,
@@ -95,7 +95,7 @@ export function MeetingForm({
       price: price,
       classBundleId: classBundleId,
       bookingId: bookingId,
-      isReschedule: isReschedule
+      isReschedule: isReschedule,
     },
   });
 
@@ -104,9 +104,18 @@ export function MeetingForm({
   const validTimesInTimezone = useMemo(() => {
     return validTimes.map((date) => toZonedTime(date, timezone));
   }, [validTimes, timezone]);
-  const startTime = DateTime.fromJSDate(form.watch("startTime")).setZone(timezone);
+  const startTime = form.watch("startTime");
+  const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   async function onSubmit(values: z.infer<typeof meetingFormSchema>) {
+    const bangkokTime = DateTime.fromISO(
+      form.watch("startTime").toISOString(),
+      {
+        zone: form.watch("timezone"),
+      }
+    );
+    const utcToSend = bangkokTime.toUTC().toISO();
+
     const data = await createMeeting({
       ...values,
       eventId,
@@ -114,8 +123,8 @@ export function MeetingForm({
       userId,
       frequency,
       teacherId,
-      start: form.watch("startTime").toLocaleString(),
-      browserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      start: startTime,
+      browserTimeZone: browserTimeZone,
     });
 
     if (data?.error) {
@@ -139,11 +148,14 @@ export function MeetingForm({
         <FormField
           control={form.control}
           name="timezone"
-          
           render={({ field }) => (
             <FormItem>
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}  value={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
@@ -214,10 +226,85 @@ export function MeetingForm({
                 <FormLabel>Time</FormLabel>
                 <Select
                   disabled={date == null || timezone == null}
-                  onValueChange={(value) =>
-                    field.onChange(new Date(Date.parse(value)))
-                  }
-                  defaultValue={field.value?.toISOString()}
+                  onValueChange={(value) => {
+                    console.log("====================================");
+                    console.log(
+                      "Selected UTC time (raw value from dropdown):",
+                      value
+                    );
+                    console.log("====================================");
+
+                    // Timezone where this time should be converted to
+                    console.log("====================================");
+                    console.log("Browser Timezone:", browserTimeZone);
+                    console.log("Target Timezone:", timezone);
+                    console.log("====================================");
+
+                    // Step 1: Parse selected value as UTC
+                    const selectedUtcTime = DateTime.fromISO(value, {
+                      zone: "utc",
+                    });
+
+                    // Step 2: Convert to browser local time (for context)
+                    const browserLocalTime =
+                      selectedUtcTime.setZone(browserTimeZone);
+                    console.log(
+                      "Browser Local Time:",
+                      browserLocalTime.toISO()
+                    );
+
+                    // Step 3: Extract just the time parts (hour/minute/etc) from browser time
+                    // and reconstruct in the target timezone (e.g., Asia/Bangkok), maintaining same wall clock time
+                    const adjustedTimeInTargetZone = DateTime.fromObject(
+                      {
+                        year: browserLocalTime.year,
+                        month: browserLocalTime.month,
+                        day: browserLocalTime.day,
+                        hour: browserLocalTime.hour,
+                        minute: browserLocalTime.minute,
+                      },
+                      { zone: timezone }
+                    );
+
+                    console.log("====================================");
+                    console.log(
+                      "Adjusted Time in Target Zone (wall clock preserved):",
+                      adjustedTimeInTargetZone.toISO()
+                    );
+                    console.log("====================================");
+
+                    // Step 4: Submit this adjusted time as a JS Date object
+
+                    adjustedTimeInTargetZone.toJSDate();
+                    console.log("====================================");
+                    console.log(
+                      "Adjusted Time in Target Zone (JS Date):",
+                      adjustedTimeInTargetZone.toJSDate()
+                    );
+                    console.log("====================================");
+
+                    // Step 5: I want adjustedTimeInTargetZone.toJSDate() in Date format and verify whether it is in the correct timezone
+                    // Step 5: I want adjustedTimeInTargetZone.toJSDate() in Date format and verify whether it is in the correct timezone
+
+                    const jsDate = adjustedTimeInTargetZone.toJSDate();
+                    console.log("====================================");
+                    console.log(
+                      "Adjusted JS Date (system local):",
+                      jsDate.toString()
+                    ); // Local time (Africa/Johannesburg if that's your browser)
+                    console.log(
+                      "Adjusted JS Date (ISO / UTC):",
+                      jsDate.toISOString()
+                    ); // Always in UTC
+                    console.log("====================================");
+
+                    // Re-parse with Luxon and show it in the target timezone
+                    const check = DateTime.fromJSDate(jsDate).setZone(timezone);
+                    console.log(`Re-parsed in "${timezone}":`, check.toISO());
+                    console.log("Hour in timezone:", check.hour);
+                    console.log("====================================");
+                    field.onChange(adjustedTimeInTargetZone.toJSDate());
+                  }}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -270,11 +357,7 @@ export function MeetingForm({
               <FormItem className="flex-1">
                 <FormLabel>Your Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    {...field}
-                    disabled
-                  />
+                  <Input type="email" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -288,12 +371,7 @@ export function MeetingForm({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea
-                  className="resize-none"
-                  {...field}
-                
-                  disabled
-                />
+                <Textarea className="resize-none" {...field} disabled />
               </FormControl>
               <FormMessage />
             </FormItem>

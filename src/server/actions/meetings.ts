@@ -15,10 +15,6 @@ export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
-
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
   
   if (!success) return { error: true }
 
@@ -36,61 +32,23 @@ export async function createMeeting(
 
   const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
 
-  const parsedDate = parse(data.start, 'dd/MM/yyyy, HH:mm:ss', new Date(), );
-
-  const newFormated = format(parsedDate, 'yyyy-MM-dd HH:mm:ss');
-
   console.log('====================================');
-  console.log("Parsed and formated" + newFormated);
+  console.log("Formatted Time "+formattedTime);
   console.log('====================================');
 
-  const zonedParsedTime = DateTime.fromFormat(newFormated, 'yyyy-MM-dd HH:mm:ss', {
-    zone: data.timezone,
-  });
 
-  console.log('====================================');
-  console.log("Parsed Zoned and formated "+zonedParsedTime);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log("Browser Time"+ data.browserTimeZone);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log(formattedTime);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log( data.timezone);
-  console.log('====================================');
-
-// Step 2: Combine that with the selected timezone — assume the time is in the selected zone
 const zonedTime = DateTime.fromFormat(formattedTime, 'yyyy-MM-dd HH:mm:ss', {
   zone: data.timezone,
 });
-
-console.log('====================================');
-console.log("Zoned Time"+ zonedTime);
-console.log('====================================');
-
 
 
   const startInTimezone = zonedTime.toJSDate();
 
 
-  console.log('====================================');
-  console.log("UTC "+startInTimezone);
-  console.log('====================================');
-
-    console.log('====================================');
-    console.log(formatISO(startInTimezone));
-    console.log('====================================');
-
-    const localized = DateTime.fromISO(formatISO(startInTimezone), { zone: data.timezone });
-
-console.log('====================================');
-console.log(localized.toString()); // Zoned version
-console.log('====================================');
+console.log('Raw start:', data.start);
+console.log('Client timezone:', data.timezone);
+// console.log('Localized time:', newTestlocalized.toISO()); 
+// console.log('UTC time:', newTestlocalized.toUTC().toISO()); 
 
 
   const ti = await db.query.ScheduleTable.findFirst({
@@ -106,47 +64,47 @@ console.log('====================================');
 
   if (data.isTrial && data.step === 1) {
     try {
-      // const res = await createCalendarEvent({
-      //   ...data,
-      //   startTime: startInTimezone,
-      //   durationInMinutes: event.durationInMinutes,
-      //   eventName: event.name,
-      //   isTrial: true,
-      //   frequency: data.frequency
-      // })
+      const res = await createCalendarEvent({
+        ...data,
+        startTime: data.start,
+        durationInMinutes: event.durationInMinutes,
+        eventName: event.name,
+        isTrial: true,
+        frequency: data.frequency
+      })
 
 
-      // await prisma.meeting.create({
-      //   data: {
-      //     studentId: data.userId,
-      //     teacherId: data.teacherId,
-      //     date: new Date(res.start!.dateTime!),
-      //     startTime: new Date(res.start!.dateTime!),
-      //     endTime: new Date(res.end!.dateTime!),
-      //     googleMeetUrl: res.hangoutLink!,
-      //     status: MeetingStatus.SCHEDULED,
-      //     price: data.price,
-      //     description: res!.description!,
-      //     teacherEmail: res.organizer!.email!,
-      //     title: res!.summary!,
-      //     studentTimeZone: data.timezone,
-      //     teacherTimeZone: ti.timezone,
-      //     teacherFinished: false,
-      //     studentFinished: false,
-      //     duration: event.durationInMinutes,
-      //     eventId: res.id
-      //   }
-      // })
+      await prisma.meeting.create({
+        data: {
+          studentId: data.userId,
+          teacherId: data.teacherId,
+          date: new Date(res.start!.dateTime!),
+          startTime: new Date(res.start!.dateTime!),
+          endTime: new Date(res.end!.dateTime!),
+          googleMeetUrl: res.hangoutLink!,
+          status: MeetingStatus.SCHEDULED,
+          price: data.price,
+          description: res!.description!,
+          teacherEmail: res.organizer!.email!,
+          title: res!.summary!,
+          studentTimeZone: data.timezone,
+          teacherTimeZone: ti.timezone,
+          teacherFinished: false,
+          studentFinished: false,
+          duration: event.durationInMinutes,
+          eventId: res.id
+        }
+      })
 
 
-      // await prisma.user.update({
-      //   where: {
-      //     id: data.userId
-      //   },
-      //   data: {
-      //     hasUsedFreeTrial: true
-      //   }
-      // })
+      await prisma.user.update({
+        where: {
+          id: data.userId
+        },
+        data: {
+          hasUsedFreeTrial: true
+        }
+      })
       return;
     } catch (error) {
       

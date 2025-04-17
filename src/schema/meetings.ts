@@ -31,7 +31,7 @@ export const meetingActionSchema = z
     userId: z.string().min(1, "Required"),
     frequency: z.number(),
     teacherId: z.string().min(1, "Required"),
-    start: z.string().min(1, "Required"),
+    start: z.date().min(startOfDay(new Date()), "Must be in the future"),
     browserTimeZone: z.string().min(1, "Required")
   })
   .merge(meetingSchemaBase)
