@@ -114,7 +114,6 @@ export function MeetingForm({
         zone: form.watch("timezone"),
       }
     );
-    const utcToSend = bangkokTime.toUTC().toISO();
 
     const data = await createMeeting({
       ...values,
