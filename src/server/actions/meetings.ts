@@ -114,7 +114,7 @@ console.log('Client timezone:', data.timezone);
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/trial/success?startTime=${data.start.toISOString()}`
     )
   }
 
@@ -190,7 +190,7 @@ console.log('Client timezone:', data.timezone);
 
     redirect(
       `/reschedule/${data.teacherId}/${data.userId
-      }/${data.classBundleId!}/reschedule/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classBundleId!}/reschedule/success?startTime=${data.start.toISOString()}`
     )
   }
 
@@ -255,7 +255,7 @@ console.log('Client timezone:', data.timezone);
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/success?startTime=${data.start.toISOString()}`
     )
 
 
@@ -319,7 +319,7 @@ console.log('Client timezone:', data.timezone);
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/success?startTime=${data.start.toISOString()}`
       )
     }
 
@@ -394,14 +394,14 @@ console.log('Client timezone:', data.timezone);
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.classCode}/${data.teacherId}/success?startTime=${data.startTime.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/success?startTime=${data.start.toISOString()}`
       )
     }
 
     redirect(
       `/book/${data.clerkUserId}/${data.eventId
       }/${data.userId
-      }/${data.classCode}/${data.teacherId}/2?d=${data.startTime.toISOString()}`
+      }/${data.classCode}/${data.teacherId}/2?d=${data.start.toISOString()}`
     )
   }
 }
