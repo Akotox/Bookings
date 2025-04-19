@@ -17,7 +17,6 @@ import { getTeacher } from "@/server/teacher/getTeacher";
 import { getTeacherName } from "@/server/teacher/getTeacherName";
 import { checkTrial } from "@/server/user/checkTrial";
 import { getUser } from "@/server/user/getUser";
-import { clerkClient } from "@clerk/nextjs/server";
 import {
   addMonths,
   eachMinuteOfInterval,
@@ -27,6 +26,7 @@ import {
 import Link from "next/link";
 import { Metadata } from "next";
 import { getCalendarUser } from "@/server/user/getCalenderUser";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -69,14 +69,10 @@ export default async function BookEventPage({
 
   const hasTrial: boolean = await checkTrial(userId);
 
-  // const calendarUser = await clerkClient().users.getUser(clerkUserId);
-  const result = await getCalendarUser(clerkUserId);
+  const calendarUser = await clerkClient().users.getUser(clerkUserId);
 
-  if (!result.success) {
-    return <NotFound message={result.error} />; // or a <NotFound /> or custom UI
-  }
+  if (!calendarUser) return <NotFound message="Calendar user not found" />;
 
-  const calendarUser = result.user;
 
   const startDate = roundToNearestMinutes(new Date(), {
     nearestTo: 15,

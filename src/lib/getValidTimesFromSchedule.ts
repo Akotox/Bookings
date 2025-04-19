@@ -67,9 +67,9 @@ export async function getValidTimesFromSchedule(
     end,
   })
 
-  console.log('====================================');
-  console.log('eventTimes', eventTimes);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log('eventTimes', eventTimes);
+  // console.log('====================================');
 
   return timesInOrder.filter(intervalDate => {
     const availabilities = getAvailabilities(
