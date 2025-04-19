@@ -26,6 +26,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import { Metadata } from "next";
+import { getCalendarUser } from "@/server/user/getCalenderUser";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -68,9 +69,14 @@ export default async function BookEventPage({
 
   const hasTrial: boolean = await checkTrial(userId);
 
-  const calendarUser = await clerkClient().users.getUser(clerkUserId);
+  // const calendarUser = await clerkClient().users.getUser(clerkUserId);
+  const result = await getCalendarUser(clerkUserId);
 
-  if (!calendarUser) return <NotFound message="Calendar user inactive send an email to notify them" />;
+  if (!result.success) {
+    return <NotFound message={result.error} />; // or a <NotFound /> or custom UI
+  }
+
+  const calendarUser = result.user;
 
   const startDate = roundToNearestMinutes(new Date(), {
     nearestTo: 15,
@@ -115,7 +121,7 @@ export default async function BookEventPage({
   );
 
   if (validTimes.length === 0) {
-    return <NoTimeSlots event={event} calendarUser={calendarUser} />;
+    return <NoTimeSlots event={event} calendarUser={calendarUser!} />;
   }
 
   return hasTrial === true ? (
