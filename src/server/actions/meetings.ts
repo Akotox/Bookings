@@ -199,7 +199,7 @@ console.log('Client timezone:', data.timezone);
 
     const res = await createCalendarEvent({
       ...data,
-      startTime: startInTimezone,
+      startTime: data.start,
       durationInMinutes: event.durationInMinutes,
       eventName: event.name,
       isTrial: false,
@@ -334,7 +334,7 @@ console.log('Client timezone:', data.timezone);
 
     const res = await createCalendarEvent({
       ...data,
-      startTime: startInTimezone,
+      startTime: data.start,
       durationInMinutes: event.durationInMinutes,
       eventName: event.name,
       isTrial: false,
