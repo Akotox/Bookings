@@ -74,6 +74,8 @@ export default async function RescheduleEventPage({
   if (!teacherName) return <NotFound message="Teacher not found" />;
 
   const calendarUser = await clerkClient().users.getUser(clerkUser.clerkUserId);
+
+  if (!calendarUser) return <NotFound message="Calendar user inactive send an email to notify them" />;
   const startDate = roundToNearestMinutes(new Date(), {
     nearestTo: 15,
     roundingMethod: "ceil",

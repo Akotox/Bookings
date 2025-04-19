@@ -78,6 +78,9 @@ export default async function BookEventPage({
   const hasTrial: boolean = await checkTrial(userId);
 
   const calendarUser = await clerkClient().users.getUser(clerkUserId);
+
+  if (!calendarUser) return <NotFound message="Calendar user inactive send an email to notify them" />;
+
   const startDate = roundToNearestMinutes(new Date(), {
     nearestTo: 15,
     roundingMethod: "ceil",
