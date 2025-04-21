@@ -108,12 +108,6 @@ export function MeetingForm({
   const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   async function onSubmit(values: z.infer<typeof meetingFormSchema>) {
-    const bangkokTime = DateTime.fromISO(
-      form.watch("startTime").toISOString(),
-      {
-        zone: form.watch("timezone"),
-      }
-    );
 
     const data = await createMeeting({
       ...values,

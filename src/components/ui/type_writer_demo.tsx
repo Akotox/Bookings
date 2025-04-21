@@ -3,12 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { createEvents } from "@/server/actions/events";
 import { MeetingTicket } from "../assets/logo";
 import { TypewriterEffectSmooth } from "./typer-writer-effect";
+import React from "react";
 
 
 export function TypewriterEffectSmoothDemo({teacherId}: {
   teacherId: string
 }) {
+  const [isLoading, setIsLoading] = React.useState(false);
   const handleSubmit = async () => {
+    setIsLoading(true);
     const defaultEvents: Events[] = [
       {
         id: uuidv4(),
@@ -27,7 +30,8 @@ export function TypewriterEffectSmoothDemo({teacherId}: {
         isActive: true,
       },
     ];
-    await createEvents(defaultEvents,teacherId);
+     await createEvents(defaultEvents,teacherId);
+    setIsLoading(false);
   };
   const words = [
     {
@@ -61,6 +65,7 @@ export function TypewriterEffectSmoothDemo({teacherId}: {
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
         <button
           onClick={handleSubmit}
+          disabled={isLoading}
           className="w-80 h-10 transform transition-all duration-300 hover:-translate-y-0.5 rounded-xl bg-black border dark:border-white border-transparent text-white text-sm"
         >
           Create Default Events

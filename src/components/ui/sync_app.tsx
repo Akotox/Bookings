@@ -3,16 +3,19 @@
 import { syncApp } from "@/server/teacher/syncApp";
 import { TypewriterEffectSmooth } from "./typer-writer-effect";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 export function SyncApp({ clerkId, teacherId, email }: { clerkId: string, teacherId: string, email: string }) {
-
+    const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
 
     const handleSubmit = async () => {
         try {
+            setIsLoading(true);
             await syncApp(clerkId, teacherId, email);
             router.push("/"); 
         } catch (error) {
+            setIsLoading(false);
             console.error("Error syncing app:", error);
         }
     };
@@ -50,7 +53,7 @@ export function SyncApp({ clerkId, teacherId, email }: { clerkId: string, teache
         The road to financial freedom starts here
       </p>
       <TypewriterEffectSmooth words={isSyncedWords} />
-      <button onClick={handleSubmit} className="w-80 h-10 transform transition-all duration-300 hover:-translate-y-0.5 rounded-xl bg-black border dark:border-white border-transparent text-white text-sm">
+      <button disabled={isLoading} onClick={handleSubmit} className="w-80 h-10 transform transition-all duration-300 hover:-translate-y-0.5 rounded-xl bg-black border dark:border-white border-transparent text-white text-sm">
         Continue
       </button>
     </div>
