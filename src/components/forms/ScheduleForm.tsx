@@ -55,7 +55,6 @@ export function ScheduleForm({
     },
   });
 
-
   const {
     append: addAvailability,
     remove: removeAvailability,
@@ -221,9 +220,13 @@ export function ScheduleForm({
           <button
             type="submit"
             disabled={form.formState.isSubmitting}
-            className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            className={`w-24 md:w-32 transform rounded-lg px-6 py-2 font-medium transition-all duration-300 ${
+              form.formState.isSubmitting
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-black text-white hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            }`}
           >
-            Save
+            {form.formState.isSubmitting ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
