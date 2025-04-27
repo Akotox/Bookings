@@ -127,7 +127,7 @@ const Footer = () => {
     return (
         <footer className="flex flex-col items-center justify-center border-t border-neutral-200 px-4 py-6 text-center text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
         <div className="flex gap-4 mb-2">
-          <a href="/privacy-policy" className="hover:underline">
+          <a href="/privacy" className="hover:underline">
             Privacy Policy
           </a>
           <a href="/terms" className="hover:underline">
