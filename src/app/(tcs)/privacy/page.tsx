@@ -19,14 +19,14 @@ export default function PrivacyPolicy() {
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
-          <p className="mb-4">Welcome to ScheduleBuddy.com.</p>
+          <p className="mb-4">Welcome to ScheduleBuddy.cloud.</p>
           <p className="mb-4">
-            ScheduleBuddy.com (&quot;us&quot;, &quot;we&quot;, or
-            &quot;our&quot;) operates https://schedulebuddy.com (hereinafter
+            ScheduleBuddy.cloud (&quot;us&quot;, &quot;we&quot;, or
+            &quot;our&quot;) operates https://schedulebuddy.cloud (hereinafter
             referred to as &quot;Service&quot;).
           </p>
           <p className="mb-4">
-            Our Privacy Policy governs your visit to https://schedulebuddy.com,
+            Our Privacy Policy governs your visit to https://schedulebuddy.cloud,
             and explains how we collect, safeguard and disclose information that
             results from your use of our Service.
           </p>
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
           <p className="mb-4 justify-evenly">
             If you do not agree with (or cannot comply with) Agreements, then
             you may not use the Service, but please let us know by emailing at
-            support@schedulebuddy.com so we can try to find a solution. These
+            support@schedulebuddy.cloud so we can try to find a solution. These
             Terms apply to all visitors, users and others who wish to access or
             use Service.
           </p>
@@ -54,8 +54,8 @@ export default function PrivacyPolicy() {
         <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Definitions</h2>
           <p className="mb-4">
-            SERVICE means the https://schedulebuddy.com website operated by
-            schedulebuddy.com.
+            SERVICE means the https://schedulebuddy.cloud website operated by
+            schedulebuddy.cloud.
           </p>
           <p className="mb-4">
             PERSONAL DATA means data about a living individual who can be
@@ -137,7 +137,7 @@ export default function PrivacyPolicy() {
             marketing or promotional materials and other information that may be
             of interest to you. You may opt out of receiving any, or all, of
             these communications from us by following the unsubscribe link or by
-            emailing at support@schedulebuddy.com.
+            emailing at support@schedulebuddy.cloud.
           </p>
 
           <h4 className="text-lg font-semibold mb-2">Usage Data</h4>
@@ -185,7 +185,7 @@ export default function PrivacyPolicy() {
         <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Use of Data</h2>
           <p className="mb-4">
-            Schedulebuddy.com uses the collected data for various purposes:
+            Schedulebuddy.cloud uses the collected data for various purposes:
           </p>
           <ul className="list-disc list-inside mb-4 space-y-2">
             <li>To provide and maintain our Service;</li>
@@ -263,7 +263,7 @@ export default function PrivacyPolicy() {
           </p>
 
           <p>
-            Schedulebuddy.com will take all the steps reasonably necessary to
+            Schedulebuddy.cloud will take all the steps reasonably necessary to
             ensure that your data is treated securely and in accordance with
             this Privacy Policy and no transfer of your Personal Data will take
             place to an organisation or a country unless there are adequate
@@ -340,8 +340,8 @@ export default function PrivacyPolicy() {
   </p>
   <p className="mb-4">
     If you wish to be informed what Personal Data we hold about you and if you want it to be removed from our systems, please email us at{' '}
-    <a href="mailto:support@schedulebuddy.com" className="text-blue-600 underline">
-      support@schedulebuddy.com
+    <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
+      support@schedulebuddy.cloud
     </a>.
   </p>
   <p className="mb-4">
@@ -379,8 +379,8 @@ export default function PrivacyPolicy() {
     <li>Our Privacy Policy link includes the word “Privacy”, and can easily be found on the page specified above on the home page of our website;</li>
     <li>Users will be notified of any privacy policy changes on our Privacy Policy Page;</li>
     <li>Users are able to change their personal information by emailing us at{' '}
-      <a href="mailto:support@schedulebuddy.com" className="text-blue-600 underline">
-      support@schedulebuddy.com
+      <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
+      support@schedulebuddy.cloud
       </a>.
     </li>
   </ul>
@@ -423,7 +423,7 @@ export default function PrivacyPolicy() {
     To exercise your California data protection rights described above, please send your request(s) by one of the following means:
   </p>
   <ul className="list-disc list-inside mb-4 space-y-2">
-    <li>By email: <a href="mailto:support@schedulebuddy.com" className="text-blue-600 underline">support@schedulebuddy.com</a></li>
+    <li>By email: <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">support@schedulebuddy.cloud</a></li>
   </ul>
   <p className="mb-4">
     Your data protection rights, described above, are covered by the CCPA, short for the California Consumer Privacy Act. To find out more, visit the official California Legislative Information website. The CCPA took effect on 01/01/2020.
@@ -480,8 +480,8 @@ export default function PrivacyPolicy() {
   </p>
   <p className="mb-4">
     By email:&nbsp;
-    <a href="mailto:support@schedulebuddy.com" className="text-blue-600 underline">
-      support@schedulebuddy.com
+    <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
+      support@schedulebuddy.cloud
     </a>
   </p>
 </section>

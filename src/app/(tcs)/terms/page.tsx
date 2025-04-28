@@ -18,13 +18,13 @@ export default function Terms() {
         <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
           <p className="mb-4">
-            Welcome to ScheduleBuddy.com.
+            Welcome to ScheduleBuddy.cloud.
           </p>
           <p className="mb-4">
-          ScheduleBuddy.com (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates https://schedulebuddy.com (hereinafter referred to as &quot;Service&quot;).
+          ScheduleBuddy.cloud (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates https://schedulebuddy.cloud (hereinafter referred to as &quot;Service&quot;).
           </p>          
           <p className="mb-4">
-            Our Privacy Policy governs your visit to https://schedulebuddy.com, and explains how we collect, safeguard and disclose information that results from your use of our Service.
+            Our Privacy Policy governs your visit to https://schedulebuddy.cloud, and explains how we collect, safeguard and disclose information that results from your use of our Service.
           </p>
           <p className="mb-4 justify-evenly">
             We use your data to provide and improve Service. By using Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, the terms used in this Privacy Policy have the same meanings as in our Terms and Conditions.
@@ -277,7 +277,7 @@ export default function Terms() {
 <section className="mt-10">
   <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
   <p className="mb-4">
-    If you have any questions about these Terms, please contact us by email: support@schedulebuddy
+    If you have any questions about these Terms, please contact us by email: support@schedulebuddy.cloud
   </p>
 </section>
     </main>
