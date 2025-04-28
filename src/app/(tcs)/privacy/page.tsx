@@ -1,3 +1,4 @@
+import { SignInButton } from "@clerk/nextjs";
 import React from "react";
 
 export default function PrivacyPolicy() {
@@ -6,10 +7,15 @@ export default function PrivacyPolicy() {
       <header className="border-b border-gray-200 py-4 px-6 flex items-center justify-between">
         <div className="text-2xl font-bold">ScheduleBuddy</div>
         <div className="flex items-center space-x-4">
-          <button className="text-sm font-medium">Sign in</button>
-          <button className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium">
-            Get started
+          <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+            <SignInButton />
           </button>
+          <a
+            href="/"
+            className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium inline-block text-center"
+          >
+            Get started
+          </a>
         </div>
       </header>
 
@@ -26,9 +32,9 @@ export default function PrivacyPolicy() {
             referred to as &quot;Service&quot;).
           </p>
           <p className="mb-4">
-            Our Privacy Policy governs your visit to https://schedulebuddy.cloud,
-            and explains how we collect, safeguard and disclose information that
-            results from your use of our Service.
+            Our Privacy Policy governs your visit to
+            https://schedulebuddy.cloud, and explains how we collect, safeguard
+            and disclose information that results from your use of our Service.
           </p>
           <p className="mb-4 justify-evenly">
             We use your data to provide and improve Service. By using Service,
@@ -316,178 +322,347 @@ export default function PrivacyPolicy() {
               others.
             </li>
           </ul>
-
         </section>
 
         <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Security of Data</h2>
           <p className="mb-4">
-          The security of your data is important to us but remember that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.
+            The security of your data is important to us but remember that no
+            method of transmission over the Internet or method of electronic
+            storage is 100% secure. While we strive to use commercially
+            acceptable means to protect your Personal Data, we cannot guarantee
+            its absolute security.
           </p>
-          
         </section>
 
         <section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Your Data Protection Rights Under General Data Protection Regulation (GDPR)</h2>
-  <p className="mb-4">
-    If you are a resident of the European Union (EU) and European Economic Area (EEA), you have certain data protection rights, covered by GDPR. – See more at{' '}
-    <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
-      this link
-    </a>.
-  </p>
-  <p className="mb-4">
-    We aim to take reasonable steps to allow you to correct, amend, delete, or limit the use of your Personal Data.
-  </p>
-  <p className="mb-4">
-    If you wish to be informed what Personal Data we hold about you and if you want it to be removed from our systems, please email us at{' '}
-    <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
-      support@schedulebuddy.cloud
-    </a>.
-  </p>
-  <p className="mb-4">
-    In certain circumstances, you have the following data protection rights:
-  </p>
-  <ul className="list-disc list-inside mb-4 space-y-2">
-    <li>The right to access, update or to delete the information we have on you;</li>
-    <li>The right of rectification. You have the right to have your information rectified if that information is inaccurate or incomplete;</li>
-    <li>The right to object. You have the right to object to our processing of your Personal Data;</li>
-    <li>The right of restriction. You have the right to request that we restrict the processing of your personal information;</li>
-    <li>The right to data portability. You have the right to be provided with a copy of your Personal Data in a structured, machine-readable and commonly used format;</li>
-    <li>The right to withdraw consent. You also have the right to withdraw your consent at any time where we rely on your consent to process your personal information;</li>
-  </ul>
-  <p className="mb-4">
-    Please note that we may ask you to verify your identity before responding to such requests. Please note, we may not be able to provide Service without some necessary data.
-  </p>
-  <p className="mb-4">
-    You have the right to complain to a Data Protection Authority about our collection and use of your Personal Data. For more information, please contact your local data protection authority in the European Economic Area (EEA).
-  </p>
-</section>
+          <h2 className="text-2xl font-semibold mb-4">
+            Your Data Protection Rights Under General Data Protection Regulation
+            (GDPR)
+          </h2>
+          <p className="mb-4">
+            If you are a resident of the European Union (EU) and European
+            Economic Area (EEA), you have certain data protection rights,
+            covered by GDPR. – See more at{" "}
+            <a
+              href="https://eur-lex.europa.eu/eli/reg/2016/679/oj"
+              className="text-blue-600 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              this link
+            </a>
+            .
+          </p>
+          <p className="mb-4">
+            We aim to take reasonable steps to allow you to correct, amend,
+            delete, or limit the use of your Personal Data.
+          </p>
+          <p className="mb-4">
+            If you wish to be informed what Personal Data we hold about you and
+            if you want it to be removed from our systems, please email us at{" "}
+            <a
+              href="mailto:support@schedulebuddy.cloud"
+              className="text-blue-600 underline"
+            >
+              support@schedulebuddy.cloud
+            </a>
+            .
+          </p>
+          <p className="mb-4">
+            In certain circumstances, you have the following data protection
+            rights:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>
+              The right to access, update or to delete the information we have
+              on you;
+            </li>
+            <li>
+              The right of rectification. You have the right to have your
+              information rectified if that information is inaccurate or
+              incomplete;
+            </li>
+            <li>
+              The right to object. You have the right to object to our
+              processing of your Personal Data;
+            </li>
+            <li>
+              The right of restriction. You have the right to request that we
+              restrict the processing of your personal information;
+            </li>
+            <li>
+              The right to data portability. You have the right to be provided
+              with a copy of your Personal Data in a structured,
+              machine-readable and commonly used format;
+            </li>
+            <li>
+              The right to withdraw consent. You also have the right to withdraw
+              your consent at any time where we rely on your consent to process
+              your personal information;
+            </li>
+          </ul>
+          <p className="mb-4">
+            Please note that we may ask you to verify your identity before
+            responding to such requests. Please note, we may not be able to
+            provide Service without some necessary data.
+          </p>
+          <p className="mb-4">
+            You have the right to complain to a Data Protection Authority about
+            our collection and use of your Personal Data. For more information,
+            please contact your local data protection authority in the European
+            Economic Area (EEA).
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Your Data Protection Rights under the California Privacy Protection Act (CalOPPA)</h2>
-  <p className="mb-4">
-    CalOPPA is the first state law in the nation to require commercial websites and online services to post a privacy policy. The law’s reach stretches well beyond California to require a person or company in the United States (and conceivable the world) that operates websites collecting personally identifiable information from California consumers to post a conspicuous privacy policy on its website stating exactly the information being collected and those individuals with whom it is being shared, and to comply with this policy. – See more at{' '}
-    <a href="https://consumercal.org/about-cfc/cfc-education-foundation/california-online-privacy-protection-act-caloppa-3/" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
-      this link
-    </a>.
-  </p>
-  <p className="mb-4">
-    According to CalOPPA we agree to the following:
-  </p>
-  <ul className="list-disc list-inside mb-4 space-y-2">
-    <li>Users can visit our site anonymously;</li>
-    <li>Our Privacy Policy link includes the word “Privacy”, and can easily be found on the page specified above on the home page of our website;</li>
-    <li>Users will be notified of any privacy policy changes on our Privacy Policy Page;</li>
-    <li>Users are able to change their personal information by emailing us at{' '}
-      <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
-      support@schedulebuddy.cloud
-      </a>.
-    </li>
-  </ul>
-  <h3 className="text-xl font-semibold mb-2">Our Policy on “Do Not Track” Signals:</h3>
-  <p className="mb-4">
-    We honor Do Not Track signals and do not track, plant cookies, or use advertising when a Do Not Track browser mechanism is in place. Do Not Track is a preference you can set in your web browser to inform websites that you do not want to be tracked.
-  </p>
-  <p className="mb-4">
-    You can enable or disable Do Not Track by visiting the Preferences or Settings page of your web browser.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">
+            Your Data Protection Rights under the California Privacy Protection
+            Act (CalOPPA)
+          </h2>
+          <p className="mb-4">
+            CalOPPA is the first state law in the nation to require commercial
+            websites and online services to post a privacy policy. The law’s
+            reach stretches well beyond California to require a person or
+            company in the United States (and conceivable the world) that
+            operates websites collecting personally identifiable information
+            from California consumers to post a conspicuous privacy policy on
+            its website stating exactly the information being collected and
+            those individuals with whom it is being shared, and to comply with
+            this policy. – See more at{" "}
+            <a
+              href="https://consumercal.org/about-cfc/cfc-education-foundation/california-online-privacy-protection-act-caloppa-3/"
+              className="text-blue-600 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              this link
+            </a>
+            .
+          </p>
+          <p className="mb-4">
+            According to CalOPPA we agree to the following:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>Users can visit our site anonymously;</li>
+            <li>
+              Our Privacy Policy link includes the word “Privacy”, and can
+              easily be found on the page specified above on the home page of
+              our website;
+            </li>
+            <li>
+              Users will be notified of any privacy policy changes on our
+              Privacy Policy Page;
+            </li>
+            <li>
+              Users are able to change their personal information by emailing us
+              at{" "}
+              <a
+                href="mailto:support@schedulebuddy.cloud"
+                className="text-blue-600 underline"
+              >
+                support@schedulebuddy.cloud
+              </a>
+              .
+            </li>
+          </ul>
+          <h3 className="text-xl font-semibold mb-2">
+            Our Policy on “Do Not Track” Signals:
+          </h3>
+          <p className="mb-4">
+            We honor Do Not Track signals and do not track, plant cookies, or
+            use advertising when a Do Not Track browser mechanism is in place.
+            Do Not Track is a preference you can set in your web browser to
+            inform websites that you do not want to be tracked.
+          </p>
+          <p className="mb-4">
+            You can enable or disable Do Not Track by visiting the Preferences
+            or Settings page of your web browser.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Your Data Protection Rights under the California Consumer Privacy Act (CCPA)</h2>
-  <p className="mb-4">
-    If you are a California resident, you are entitled to learn what data we collect about you, ask to delete your data and not to sell (share) it. To exercise your data protection rights, you can make certain requests and ask us:
-  </p>
-  <ul className="list-disc list-inside mb-4 space-y-2">
-    <li>The categories of personal information we have collected about you.</li>
-    <li>The categories of sources from which we collect your personal information.</li>
-    <li>The business or commercial purpose for collecting or selling your personal information.</li>
-    <li>The categories of third parties with whom we share personal information.</li>
-    <li>The specific pieces of personal information we have collected about you.</li>
-    <li>A list of categories of personal information that we have sold, along with the category of any other company we sold it to. If we have not sold your personal information, we will inform you of that fact.</li>
-    <li>A list of categories of personal information that we have disclosed for a business purpose, along with the category of any other company we shared it with.</li>
-  </ul>
-  <p className="mb-4">
-    Please note, you are entitled to ask us to provide you with this information up to two times in a rolling twelve-month period. When you make this request, the information provided may be limited to the personal information we collected about you in the previous 12 months.
-  </p>
-  <p className="mb-4">
-    <strong>To delete your personal information:</strong> If you make this request, we will delete the personal information we hold about you as of the date of your request from our records and direct any service providers to do the same. In some cases, deletion may be accomplished through de-identification of the information. If you choose to delete your personal information, you may not be able to use certain functions that require your personal information to operate.
-  </p>
-  <p className="mb-4">
-    <strong>To stop selling your personal information:</strong> We don&apos;t sell or rent your personal information to any third parties for any purpose. You are the only owner of your Personal Data and can request disclosure or deletion at any time.
-  </p>
-  <p className="mb-4">
-    Please note, if you ask us to delete or stop selling your data, it may impact your experience with us, and you may not be able to participate in certain programs or membership services which require the usage of your personal information to function. But in no circumstances, we will discriminate against you for exercising your rights.
-  </p>
-  <p className="mb-4">
-    To exercise your California data protection rights described above, please send your request(s) by one of the following means:
-  </p>
-  <ul className="list-disc list-inside mb-4 space-y-2">
-    <li>By email: <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">support@schedulebuddy.cloud</a></li>
-  </ul>
-  <p className="mb-4">
-    Your data protection rights, described above, are covered by the CCPA, short for the California Consumer Privacy Act. To find out more, visit the official California Legislative Information website. The CCPA took effect on 01/01/2020.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">
+            Your Data Protection Rights under the California Consumer Privacy
+            Act (CCPA)
+          </h2>
+          <p className="mb-4">
+            If you are a California resident, you are entitled to learn what
+            data we collect about you, ask to delete your data and not to sell
+            (share) it. To exercise your data protection rights, you can make
+            certain requests and ask us:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>
+              The categories of personal information we have collected about
+              you.
+            </li>
+            <li>
+              The categories of sources from which we collect your personal
+              information.
+            </li>
+            <li>
+              The business or commercial purpose for collecting or selling your
+              personal information.
+            </li>
+            <li>
+              The categories of third parties with whom we share personal
+              information.
+            </li>
+            <li>
+              The specific pieces of personal information we have collected
+              about you.
+            </li>
+            <li>
+              A list of categories of personal information that we have sold,
+              along with the category of any other company we sold it to. If we
+              have not sold your personal information, we will inform you of
+              that fact.
+            </li>
+            <li>
+              A list of categories of personal information that we have
+              disclosed for a business purpose, along with the category of any
+              other company we shared it with.
+            </li>
+          </ul>
+          <p className="mb-4">
+            Please note, you are entitled to ask us to provide you with this
+            information up to two times in a rolling twelve-month period. When
+            you make this request, the information provided may be limited to
+            the personal information we collected about you in the previous 12
+            months.
+          </p>
+          <p className="mb-4">
+            <strong>To delete your personal information:</strong> If you make
+            this request, we will delete the personal information we hold about
+            you as of the date of your request from our records and direct any
+            service providers to do the same. In some cases, deletion may be
+            accomplished through de-identification of the information. If you
+            choose to delete your personal information, you may not be able to
+            use certain functions that require your personal information to
+            operate.
+          </p>
+          <p className="mb-4">
+            <strong>To stop selling your personal information:</strong> We
+            don&apos;t sell or rent your personal information to any third
+            parties for any purpose. You are the only owner of your Personal
+            Data and can request disclosure or deletion at any time.
+          </p>
+          <p className="mb-4">
+            Please note, if you ask us to delete or stop selling your data, it
+            may impact your experience with us, and you may not be able to
+            participate in certain programs or membership services which require
+            the usage of your personal information to function. But in no
+            circumstances, we will discriminate against you for exercising your
+            rights.
+          </p>
+          <p className="mb-4">
+            To exercise your California data protection rights described above,
+            please send your request(s) by one of the following means:
+          </p>
+          <ul className="list-disc list-inside mb-4 space-y-2">
+            <li>
+              By email:{" "}
+              <a
+                href="mailto:support@schedulebuddy.cloud"
+                className="text-blue-600 underline"
+              >
+                support@schedulebuddy.cloud
+              </a>
+            </li>
+          </ul>
+          <p className="mb-4">
+            Your data protection rights, described above, are covered by the
+            CCPA, short for the California Consumer Privacy Act. To find out
+            more, visit the official California Legislative Information website.
+            The CCPA took effect on 01/01/2020.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Service Providers</h2>
-  <p className="mb-4">
-    We may employ third-party companies and individuals to facilitate our Service (“Service Providers”), provide Service on our behalf, perform Service-related services, or assist us in analyzing how our Service is used.
-  </p>
-  <p className="mb-4">
-    These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Service Providers</h2>
+          <p className="mb-4">
+            We may employ third-party companies and individuals to facilitate
+            our Service (“Service Providers”), provide Service on our behalf,
+            perform Service-related services, or assist us in analyzing how our
+            Service is used.
+          </p>
+          <p className="mb-4">
+            These third parties have access to your Personal Data only to
+            perform these tasks on our behalf and are obligated not to disclose
+            or use it for any other purpose.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Links to Other Sites</h2>
-  <p className="mb-4">
-    Our Service may contain links to other sites that are not operated by us. If you click a third-party link, you will be directed to that third party&apos;s site. We strongly advise you to review the Privacy Policy of every site you visit.
-  </p>
-  <p className="mb-4">
-    We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Links to Other Sites</h2>
+          <p className="mb-4">
+            Our Service may contain links to other sites that are not operated
+            by us. If you click a third-party link, you will be directed to that
+            third party&apos;s site. We strongly advise you to review the
+            Privacy Policy of every site you visit.
+          </p>
+          <p className="mb-4">
+            We have no control over and assume no responsibility for the
+            content, privacy policies, or practices of any third-party sites or
+            services.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Children&apos;s Privacy</h2>
-  <p className="mb-4">
-    Our Services are not intended for use by children under the age of 18 (“Child” or “Children”).
-  </p>
-  <p className="mb-4">
-    We do not knowingly collect personally identifiable information from Children under 18. If you become aware that a Child has provided us with Personal Data, please contact us. If we become aware that we have collected Personal Data from Children without verification of parental consent, we take steps to remove that information from our servers.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">
+            Children&apos;s Privacy
+          </h2>
+          <p className="mb-4">
+            Our Services are not intended for use by children under the age of
+            18 (“Child” or “Children”).
+          </p>
+          <p className="mb-4">
+            We do not knowingly collect personally identifiable information from
+            Children under 18. If you become aware that a Child has provided us
+            with Personal Data, please contact us. If we become aware that we
+            have collected Personal Data from Children without verification of
+            parental consent, we take steps to remove that information from our
+            servers.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Changes to This Privacy Policy</h2>
-  <p className="mb-4">
-    We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
-  </p>
-  <p className="mb-4">
-    We will let you know via email and/or a prominent notice on our Service, prior to the change becoming effective and update the “effective date” at the top of this Privacy Policy.
-  </p>
-  <p className="mb-4">
-    You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
-  </p>
-</section>
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">
+            Changes to This Privacy Policy
+          </h2>
+          <p className="mb-4">
+            We may update our Privacy Policy from time to time. We will notify
+            you of any changes by posting the new Privacy Policy on this page.
+          </p>
+          <p className="mb-4">
+            We will let you know via email and/or a prominent notice on our
+            Service, prior to the change becoming effective and update the
+            “effective date” at the top of this Privacy Policy.
+          </p>
+          <p className="mb-4">
+            You are advised to review this Privacy Policy periodically for any
+            changes. Changes to this Privacy Policy are effective when they are
+            posted on this page.
+          </p>
+        </section>
 
-<section className="mt-10">
-  <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
-  <p className="mb-4">
-    If you have any questions about this Privacy Policy, please contact us:
-  </p>
-  <p className="mb-4">
-    By email:&nbsp;
-    <a href="mailto:support@schedulebuddy.cloud" className="text-blue-600 underline">
-      support@schedulebuddy.cloud
-    </a>
-  </p>
-</section>
-
-
-       
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
+          <p className="mb-4">
+            If you have any questions about this Privacy Policy, please contact
+            us:
+          </p>
+          <p className="mb-4">
+            By email:&nbsp;
+            <a
+              href="mailto:support@schedulebuddy.cloud"
+              className="text-blue-600 underline"
+            >
+              support@schedulebuddy.cloud
+            </a>
+          </p>
+        </section>
       </main>
     </div>
   );
