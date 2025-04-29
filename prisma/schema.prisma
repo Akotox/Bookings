@@ -45,16 +45,16 @@ model TransactionRecord {
 }
 
 model ClassBooking {
-  id            String   @id @default(cuid())
-  frequency     Int
-  classCode     String
-  clerkUserId   String
-  eventId       String
-  userId        String
-  teacherId     String
-  createdClassCount Int @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(cuid())
+  frequency         Int
+  classCode         String
+  clerkUserId       String
+  eventId           String
+  userId            String
+  teacherId         String
+  createdClassCount Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 enum TransactionType {
@@ -104,6 +104,7 @@ model User {
   teacher          Teacher?
   sentMessages     messages[]     @relation("SentMessages")
   receivedMessages messages[]     @relation("ReceivedMessages")
+  locale           String         @default("en")
 }
 
 model Teacher {
@@ -173,6 +174,11 @@ model Affiliate {
   User           User         @relation(fields: [userId], references: [id])
 }
 
+model PreAffiliate {
+  id             String       @id @default(uuid())
+  emailAddress   String   @unique
+}
+
 model Subscription {
   id                   String             @id @default(cuid())
   userId               String
@@ -206,7 +212,6 @@ model Applicant {
   postCertIssuedBy    String?
   postCertificateFile String?
   videoUrl            String
-  timeZone            TimeZone
   bio                 String?
   profilePic          String
   price               Int
@@ -406,7 +411,7 @@ model ClassBundle {
   unitPrice    Float
   unitDiscount Int
   teacherId    String
-  classCode    String @default("TR")
+  classCode    String         @default("TR")
   teacher      Teacher        @relation(fields: [teacherId], references: [id])
   Subscription Subscription[]
 }
