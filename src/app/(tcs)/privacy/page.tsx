@@ -232,6 +232,48 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="mt-10">
+  <h2 className="text-2xl font-semibold mb-4">Access to Google User Data</h2>
+  <p className="mb-4">
+    ScheduleBuddy integrates with Google services to provide users with a seamless scheduling experience, including the ability to automatically create and manage Google Calendar events. This functionality is only available after the user grants explicit authorization through Google OAuth.
+  </p>
+  <p className="mb-4">
+    The following Google OAuth scopes are requested:
+    <ul className="list-disc list-inside mt-2">
+      <li>
+        <strong>openid</strong> – Used to authenticate users securely and verify their identity via Google Sign-In.
+      </li>
+      <li>
+        <strong>https://www.googleapis.com/auth/userinfo.email</strong> – Used to access your email address in order to associate your Google account with your ScheduleBuddy profile and to send scheduling-related notifications.
+      </li>
+      <li>
+        <strong>https://www.googleapis.com/auth/userinfo.profile</strong> – Accesses basic profile information (such as your name and profile image) to personalize your experience within the app.
+      </li>
+      <li>
+        <strong>https://www.googleapis.com/auth/calendar.events</strong> – Allows ScheduleBuddy to create, view, and manage calendar events on your behalf. This is strictly used for creating lesson-related events between students and teachers registered on our platform.
+      </li>
+    </ul>
+  </p>
+  <p className="mb-4">
+    We do not access any Google user data beyond what is necessary to provide our scheduling features. We do not read your existing calendar events or share your data with third parties. Event creation is limited to events directly associated with ScheduleBuddy activities.
+  </p>
+  <p className="mb-4">
+    Your data is processed in real-time and is not stored on our servers unless explicitly required for app functionality. We do not store your Google access tokens, and no Google user data is used for advertising or analytics purposes.
+  </p>
+  <p className="mb-4">
+    ScheduleBuddy’s use of Google user data strictly adheres to the
+    <a
+      href="https://developers.google.com/terms/api-services-user-data-policy"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 underline ml-1"
+    >
+      Google API Services User Data Policy
+    </a>
+    , including the Limited Use requirements. All access to Google APIs is limited to the minimum necessary and solely for the operation of ScheduleBuddy’s lesson scheduling features.
+  </p>
+</section>
+
+        <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Retention of Data</h2>
           <p className="mb-4">
             We will retain your Personal Data only for as long as is necessary
