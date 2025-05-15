@@ -79,9 +79,9 @@ export default async function SuccessPage({
         this page or check your booking details.
       </CardContent>
       <CardFooter className="flex justify-center">
-        <a href="https://app.studybuddy.ing" className="inline-block">
+        <a href={`https://app.studybuddy.ing/en/complete/${userId}/${teacherId}`} className="inline-block">
           <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Continue
+            Complete Booking
           </button>
         </a>
       </CardFooter>
