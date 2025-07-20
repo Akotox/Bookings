@@ -110,7 +110,7 @@ model User {
 model Teacher {
   id                   String                @id @default(uuid())
   subject              Subject?
-  nationality          TeacherNationality
+  nationality          String
   lessonPrice          Int
   lessonDescription    String
   description          String
@@ -171,12 +171,13 @@ model Affiliate {
   isStripeActive StripeStatus @default(INACTIVE)
   stripeAccount  String?
   locale         String
+  verified       Boolean      @default(false)
   User           User         @relation(fields: [userId], references: [id])
 }
 
 model PreAffiliate {
-  id             String       @id @default(uuid())
-  emailAddress   String   @unique
+  id           String @id @default(uuid())
+  emailAddress String @unique
 }
 
 model Subscription {
@@ -221,6 +222,7 @@ model Applicant {
   vietnameseCourses   VietnameseCources?
   userId              String             @unique
   User                User               @relation(fields: [userId], references: [id])
+  createdAt           DateTime           @default(now())
 }
 
 model Availability {
@@ -242,36 +244,37 @@ model TimeBlock {
 }
 
 model StudentReview {
-  id                                       String                  @unique @default(uuid())
-  teacherName                              String
-  studentName                              String
-  dateOfClass                              String
-  participationLevel                       ParticipationLevel
-  understandingOfMaterial                  UnderstandingOfMaterial
-  fluency                                  String?
-  pronunciation                            String?
-  listeningSkills                          String?
-  otherRelevantSkills                      String?
-  topStrengths                             String
-  whatStudentDidWell                       String
-  areasOfImprovement                       String
-  suggestionsForImprovement                String
-  additionalObservation                    String
-  slug                                     String                  @unique
-  studentId                                String                  @unique
-  teacherId                                String?
-  Teacher                                  Teacher?                @relation(fields: [teacherId], references: [id])
-  textAnalysisTechniques                   String?
-  creativityInWriting                      String?
-  understandingTheVietnamesCulturalContext String?
-  understandingOfJapaneseculture           String?
+  id                             String                  @unique @default(uuid())
+  teacherName                    String
+  studentName                    String
+  dateOfClass                    String
+  participationLevel             ParticipationLevel
+  understandingOfMaterial        UnderstandingOfMaterial
+  fluency                        String?
+  pronunciation                  String?
+  listeningSkills                String?
+  slug                           String                  @unique
+  studentId                      String                  @unique
+  teacherId                      String?
+  Teacher                        Teacher?                @relation(fields: [teacherId], references: [id])
+  understandingOfJapaneseculture String?
 
-  problemSolvingSkills  String?
-  accuracyInCalculation String?
-  problemSolvingSpeed   String?
-  knowledgeRetention    String?
-  LogicalReasoning      String?
-  teacherEmail          String?
+  problemSolvingSkills                     String?
+  understandingTheVietnamesCulturalContext String?
+  creativityInWriting                      String?
+  textAnalysisTechniques                   String?
+  accuracyInCalculation                    String?
+  problemSolvingSpeed                      String?
+  knowledgeRetention                       String?
+  LogicalReasoning                         String?
+  teacherEmail                             String?
+
+  OtherRelevantSkill        OtherRelevantSkill[]
+  TopStrength               TopStrength[]
+  WhatStudentDidWell        WhatStudentDidWell[]
+  AreasOfImprovement        AreasOfImprovement[]
+  SuggestionsForImprovement SuggestionsForImprovement[]
+  AdditionalObservation     AdditionalObservation[]
 }
 
 model ReportedUsers {
@@ -296,29 +299,30 @@ model Session {
 }
 
 model Meeting {
-  id              String        @id @default(cuid())
-  studentId       String
-  teacherId       String
-  date            DateTime
-  startTime       DateTime
-  endTime         DateTime
-  googleMeetUrl   String?
-  status          MeetingStatus @default(PENDING)
-  price           Float
-  eventId         String?
-  duration        Int           @default(60)
-  subscriptionId  String?
-  description     String?
-  teacherEmail    String?
-  title           String?
-  studentTimeZone String
-  teacherTimeZone String
-  teacherFinished Boolean       @default(false)
-  studentFinished Boolean       @default(false)
-  student         User          @relation("StudentMeetings", fields: [studentId], references: [id])
-  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
-  teacher         Teacher       @relation(fields: [teacherId], references: [id])
-  payment         Payment?
+  id                      String        @id @default(cuid())
+  studentId               String
+  teacherId               String
+  date                    DateTime
+  startTime               DateTime
+  endTime                 DateTime
+  googleMeetUrl           String?
+  status                  MeetingStatus @default(PENDING)
+  price                   Float
+  eventId                 String?
+  duration                Int           @default(60)
+  subscriptionId          String?
+  description             String?
+  teacherEmail            String?
+  title                   String?
+  studentTimeZone         String
+  teacherTimeZone         String
+  teacherFinished         Boolean       @default(false)
+  studentFinished         Boolean       @default(false)
+  student                 User          @relation("StudentMeetings", fields: [studentId], references: [id])
+  subscription            Subscription? @relation(fields: [subscriptionId], references: [id])
+  teacher                 Teacher       @relation(fields: [teacherId], references: [id])
+  payment                 Payment?
+  sentDeliverabilityEmail Boolean?      @default(false)
 }
 
 model MeetingTicket {
@@ -427,6 +431,72 @@ enum ParticipationLevel {
   Active
   Somewhat_Passive
   Passive
+}
+
+enum LanguageTypes {
+  en
+  es
+  vi
+}
+
+model OtherRelevantSkill {
+  id              String        @id @default(uuid())
+  language        LanguageTypes // 'en', 'es', 'vi'
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId]) // Prevent duplicate langs for same review
+}
+
+model TopStrength {
+  id              String        @id @default(uuid())
+  language        LanguageTypes
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId])
+}
+
+model WhatStudentDidWell {
+  id              String        @id @default(uuid())
+  language        LanguageTypes
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId])
+}
+
+model AreasOfImprovement {
+  id              String        @id @default(uuid())
+  language        LanguageTypes
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId])
+}
+
+model SuggestionsForImprovement {
+  id              String        @id @default(uuid())
+  language        LanguageTypes
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId])
+}
+
+model AdditionalObservation {
+  id              String        @id @default(uuid())
+  language        LanguageTypes
+  value           String
+  studentReviewId String
+  StudentReview   StudentReview @relation(fields: [studentReviewId], references: [id])
+
+  @@unique([language, studentReviewId])
 }
 
 enum UnderstandingOfMaterial {
@@ -684,252 +754,6 @@ enum Subject {
   SMM
   Copywriting
   Email_marketing
-}
-
-enum TeacherNationality {
-  United_States_Of_America
-  Peru
-  United_Kingdom
-  Canada
-  Australia
-  Afghanistan
-  Aland_Islands
-  Albania
-  Algeria
-  American_Samoa
-  Andorra
-  Angola
-  Anguilla
-  Antarctica
-  Antigua_And_Barbuda
-  Argentina
-  Armenia
-  Aruba
-  Austria
-  Azerbaijan
-  Bahamas
-  Bahrain
-  Bangladesh
-  Barbados
-  Belgium
-  Belize
-  Benin
-  Bermuda
-  Bhutan
-  Bolivia
-  Bonaire_Sint_Eustatius_And_Saba
-  Bosnia_And_Herzegovina
-  Botswana
-  Bouvet_Island
-  Brazil
-  British_Indian_Ocean_Territory
-  Brunei
-  Bulgaria
-  Burkina_Faso
-  Burundi
-  Cabo_Verde
-  Cambodia
-  Cameroon
-  Cayman_Islands
-  Central_African_Republic
-  Chad
-  Chile
-  China
-  Christmas_Island
-  Cocos_Keeling_Islands
-  Colombia
-  Comoros
-  Congo
-  Congo_Democratic_Republic_Of_The
-  Cook_Islands
-  Costa_Rica
-  Cote_Divoire
-  Croatia
-  Curacao
-  Cyprus
-  Czechia
-  Denmark
-  Djibouti
-  Dominica
-  Dominican_Republic
-  Ecuador
-  Egypt
-  El_Salvador
-  Equatorial_Guinea
-  Eritrea
-  Estonia
-  Eswatini
-  Ethiopia
-  Falkland_Islands_Malvinas
-  Faroe_Islands
-  Fiji
-  Finland
-  France
-  French_Guiana
-  French_Polynesia
-  French_Southern_Territories
-  Gabon
-  Gambia
-  Georgia
-  Germany
-  Ghana
-  Gibraltar
-  Greece
-  Greenland
-  Grenada
-  Guadeloupe
-  Guam
-  Guatemala
-  Guernsey
-  Guinea
-  Guinea_Bissau
-  Guyana
-  Haiti
-  Heard_Island_And_McDonald_Islands
-  Holy_See
-  Honduras
-  Hong_Kong
-  Hungary
-  Iceland
-  India
-  Indonesia
-  Iraq
-  Ireland
-  Isle_Of_Man
-  Israel
-  Italy
-  Jamaica
-  Japan
-  Jersey
-  Jordan
-  Kazakhstan
-  Kenya
-  Kiribati
-  Kosovo
-  Kuwait
-  Kyrgyzstan
-  Laos
-  Latvia
-  Lebanon
-  Lesotho
-  Liberia
-  Libya
-  Liechtenstein
-  Lithuania
-  Luxembourg
-  Macao
-  Madagascar
-  Malawi
-  Malaysia
-  Maldives
-  Mali
-  Malta
-  Marshall_Islands
-  Martinique
-  Mauritania
-  Mauritius
-  Mayotte
-  Mexico
-  Micronesia_Federated_States_Of
-  Moldova
-  Monaco
-  Mongolia
-  Montenegro
-  Montserrat
-  Morocco
-  Mozambique
-  Myanmar
-  Namibia
-  Nauru
-  Nepal
-  Netherlands
-  New_Caledonia
-  New_Zealand
-  Nicaragua
-  Niger
-  Nigeria
-  Niue
-  Norfolk_Island
-  North_Macedonia
-  Northern_Mariana_Islands
-  Norway
-  Oman
-  Pakistan
-  Palau
-  Palestine_State_Of
-  Panama
-  Papua_New_Guinea
-  Paraguay
-  Philippines
-  Pitcairn
-  Poland
-  Portugal
-  Puerto_Rico
-  Qatar
-  Reunion
-  Romania
-  Rwanda
-  Saint_Barthelemy
-  Saint_Helena_Ascension_And_Tristan_Da_Cunha
-  Saint_Kitts_And_Nevis
-  Saint_Lucia
-  Saint_Martin_French_Part
-  Saint_Pierre_And_Miquelon
-  Saint_Vincent_And_The_Grenadines
-  Samoa
-  San_Marino
-  Sao_Tome_And_Principe
-  Saudi_Arabia
-  Senegal
-  Serbia
-  Seychelles
-  Sierra_Leone
-  Singapore
-  Sint_Maarten_Dutch_Part
-  Slovakia
-  Slovenia
-  Solomon_Islands
-  Somalia
-  South_Africa
-  South_Georgia_And_The_South_Sandwich_Islands
-  South_Korea
-  South_Sudan
-  Spain
-  Sri_Lanka
-  Suriname
-  Svalbard_And_Jan_Mayen
-  Sweden
-  Switzerland
-  Taiwan
-  Tajikistan
-  Tanzania
-  Thailand
-  Timor_Leste
-  Togo
-  Tokelau
-  Tonga
-  Trinidad_And_Tobago
-  Tunisia
-  Turkey
-  Turkmenistan
-  Turks_And_Caicos_Islands
-  Tuvalu
-  Uganda
-  Ukraine
-  United_Arab_Emirates
-  United_States_Minor_Outlying_Islands
-  Uruguay
-  Uzbekistan
-  Vanuatu
-  Venezuela
-  Vietnam
-  Virgin_Islands_British
-  Virgin_Islands_Us
-  Wallis_And_Futuna
-  Western_Sahara
-  Yemen
-  Zambia
-  Zimbabwe
 }
 
 enum Language {
