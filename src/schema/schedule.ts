@@ -21,7 +21,7 @@ export const scheduleFormSchema = z.object({
             "Time must be in the format HH:MM"
           ),
       })
-    )
+    ).min(3, { message: "You must add at least 3 availability slots." })
     .superRefine((availabilities, ctx) => {
       availabilities.forEach((availability, index) => {
         const overlaps = availabilities.some((a, i) => {

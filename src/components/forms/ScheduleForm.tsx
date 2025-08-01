@@ -117,6 +117,18 @@ export function ScheduleForm({
             </FormItem>
           )}
         />
+        
+        {/* --- THIS IS THE CHANGE YOU NEED TO MAKE --- */}
+        <FormItem>
+          <FormLabel>Availabilities</FormLabel>
+          <FormDescription>
+            Set the time slots when you are available. You must add at least 3.
+          </FormDescription>
+          <FormMessage>
+            {form.formState.errors.availabilities?.message}
+          </FormMessage>
+        </FormItem>
+        {/* --- END OF CHANGE --- */}
 
         <div className="grid grid-cols-[auto,1fr] gap-y-6 gap-x-4">
           {DAYS_OF_WEEK_IN_ORDER.map((dayOfWeek) => (

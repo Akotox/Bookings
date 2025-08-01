@@ -100,7 +100,7 @@ export async function createCalendarEvent({
   const calendarEvent = await google.calendar('v3').events.insert({
     calendarId: 'primary',
     auth: oAuthClient,
-    sendUpdates: 'all',
+    // sendUpdates: 'all',
     requestBody: {
       attendees: [
         { email: guestEmail, displayName: guestName },
