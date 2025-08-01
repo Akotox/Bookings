@@ -117,7 +117,7 @@ export function ScheduleForm({
             </FormItem>
           )}
         />
-        
+
         {/* --- THIS IS THE CHANGE YOU NEED TO MAKE --- */}
         <FormItem>
           <FormLabel>Availabilities</FormLabel>
@@ -231,9 +231,12 @@ export function ScheduleForm({
         <div className="flex gap-2 justify-end">
           <button
             type="submit"
-            disabled={form.formState.isSubmitting}
+            // --- THIS IS THE KEY CHANGE ---
+            // Disable the button if the form is submitting OR if the form is NOT valid.
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
             className={`w-24 md:w-32 transform rounded-lg px-6 py-2 font-medium transition-all duration-300 ${
-              form.formState.isSubmitting
+              // The disabled state styling is now handled by this single condition.
+              form.formState.isSubmitting || !form.formState.isValid
                 ? "bg-gray-400 text-white cursor-not-allowed"
                 : "bg-black text-white hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
             }`}
