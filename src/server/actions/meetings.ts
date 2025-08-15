@@ -32,10 +32,6 @@ export async function createMeeting(
 
   const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
 
-  console.log('====================================');
-  console.log("Formatted Time "+formattedTime);
-  console.log('====================================');
-
 
 const zonedTime = DateTime.fromFormat(formattedTime, 'yyyy-MM-dd HH:mm:ss', {
   zone: data.timezone,

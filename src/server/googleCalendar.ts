@@ -77,15 +77,6 @@ export async function createCalendarEvent({
     throw new Error('Clerk user has no email');
   }
 
-  console.log('====================================');
-  console.log("Calender " +startTime);
-  console.log('====================================');
-
-  console.log('====================================');
-  console.log(formatISO(startTime));
-  console.log('====================================');
-
-
   const dayOfWeek = getDay(startTime);
   const daysOfWeek = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
   const dayAbbreviation = daysOfWeek[dayOfWeek];
@@ -100,7 +91,7 @@ export async function createCalendarEvent({
   const calendarEvent = await google.calendar('v3').events.insert({
     calendarId: 'primary',
     auth: oAuthClient,
-    // sendUpdates: 'all',
+    sendUpdates: 'none',
     requestBody: {
       attendees: [
         { email: guestEmail, displayName: guestName },
