@@ -3,6 +3,7 @@
 export const en = {
   title: 'Book Trial Class with alex mahito',
   description: 'Users are permitted to take one trial class within a 2-week period of booking. To book a trial class, select an available slot from the schedule, confirm your details, and proceed with the booking. You will receive an email confirmation with further details upon successful booking.',
+  regularDescription: 'You may schedule regular 60-minute classes, with the flexibility to choose a preferred day and time. The number of classes available to book is based on your active subscription. Subsequent classes will automatically recur at the same time each week.',
   fields: {
     timezone: 'Timezone',
     date: 'Date',
@@ -51,6 +52,7 @@ export const en = {
 export const vi = {
   title: 'Đặt Lớp Học Thử với alex mahito',
   description: 'Người dùng được phép tham gia một buổi học thử trong vòng 2 tuần kể từ ngày đặt. Để đặt lớp học thử, hãy chọn một khung giờ có sẵn trong lịch, xác nhận thông tin của bạn và tiến hành đặt lịch. Sau khi đặt thành công, bạn sẽ nhận được email xác nhận kèm chi tiết.',
+  regularDescription: 'Bạn có thể đặt lịch các buổi học thông thường kéo dài 60 phút, linh hoạt lựa chọn ngày và giờ học ưa thích. Số lượng buổi học có thể đặt phụ thuộc vào gói đăng ký đang hoạt động của bạn. Các buổi học tiếp theo sẽ tự động lặp lại vào cùng thời điểm mỗi tuần.',
   fields: {
     timezone: 'Múi giờ',
     date: 'Ngày',

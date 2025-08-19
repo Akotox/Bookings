@@ -147,7 +147,7 @@ export default async function BookEventPage({
             .replace('{teacherName}', teacherName)}
         </CardTitle>
         {event.description && (
-          <CardDescription>{event.description}</CardDescription>
+          <CardDescription>{t.description}</CardDescription>
         )}
       </CardHeader>
         <CardContent>
