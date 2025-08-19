@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { getFrequencyValue } from "@/lib/classesPerWeek";
+import { getTranslations } from "@/lib/getTranslation";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
 import { getClassBundle } from "@/server/teacher/ getClassBundle";
 import { getTeacher } from "@/server/teacher/getTeacher";
@@ -52,6 +53,13 @@ export default async function BookEventPage({
   };
   searchParams: { d: string | undefined, bookingId: string };
 }) {
+    const user = await getUser(userId);
+  
+    if (!user) return <NotFound message="User not found" />;
+  
+     const t = getTranslations(user?.locale);
+  
+     const locale: "en" | "vi" = user?.locale === 'vi' ? 'vi' : 'en';
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
       and(eq(isActive, true), eq(userIdCol, clerkUserId), eq(id, eventId)),
@@ -60,7 +68,6 @@ export default async function BookEventPage({
   if (event == null)
     return <NotFound message="No events related to the proved information" />;
 
-  const user = await getUser(userId);
 
   if (!user) return <NotFound message="User not found" />;
 
@@ -146,12 +153,14 @@ export default async function BookEventPage({
     <div>
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="mb-8">
-            Book {event.name} with {teacherName}
-          </CardTitle>
+         <CardTitle>
+          {t.page.bookWith
+            .replace('{eventName}', t.page.regularClass )
+            .replace('{teacherName}', teacherName)}
+        </CardTitle>
           {event.description && (
-            <CardDescription>{event.description}</CardDescription>
-          )}
+          <CardDescription>{t.description}</CardDescription>
+        )}
         </CardHeader>
         <CardContent>
           <MeetingForm
@@ -170,7 +179,8 @@ export default async function BookEventPage({
             teacherName={teacherName}
             classCode={frequency}
             price={bundle.price}
-            bookingId={bookingId} isReschedule={false}           />
+            bookingId={bookingId} isReschedule={false}   
+            language={locale}        />
         </CardContent>
       </Card>
     </div>
