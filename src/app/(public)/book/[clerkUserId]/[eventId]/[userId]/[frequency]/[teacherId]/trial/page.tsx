@@ -27,6 +27,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { getCalendarUser } from "@/server/user/getCalenderUser";
 import { clerkClient } from "@clerk/nextjs/server";
+import { getTranslations } from "@/lib/getTranslation";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -47,6 +48,15 @@ export default async function BookEventPage({
     teacherId: string;
   };
 }) {
+    const user = await getUser(userId);
+
+  if (!user) return <NotFound message="User not found" />;
+
+   const t = getTranslations(user?.locale);
+
+   const locale: "en" | "vi" = user?.locale === 'vi' ? 'vi' : 'en';
+
+   
   const event = await db.query.EventTable.findFirst({
     where: ({ clerkUserId: userIdCol, isActive, id }, { eq, and }) =>
       and(eq(isActive, true), eq(userIdCol, clerkUserId), eq(id, eventId)),
@@ -55,9 +65,7 @@ export default async function BookEventPage({
   if (event == null)
     return <NotFound message="No events related to the proved information" />;
 
-  const user = await getUser(userId);
 
-  if (!user) return <NotFound message="User not found" />;
 
   const teacher = await getTeacher(teacherId);
 
@@ -133,15 +141,15 @@ export default async function BookEventPage({
             height={50}
             className="rounded-lg mb-4 object-cover"
           />
-          <CardTitle className="mb-12">
-            Book {event.name} with {teacherName}
-          </CardTitle>
-          {event.description && (
-            <CardDescription className="mb-12">
-              {event.description}
-            </CardDescription>
-          )}
-        </CardHeader>
+        <CardTitle>
+          {t.page.bookWith
+            .replace('{eventName}', hasTrial ? t.page.trialClass : t.page.regularClass )
+            .replace('{teacherName}', teacherName)}
+        </CardTitle>
+        {event.description && (
+          <CardDescription>{event.description}</CardDescription>
+        )}
+      </CardHeader>
         <CardContent>
           <MeetingForm
               validTimes={validTimes}
@@ -157,6 +165,7 @@ export default async function BookEventPage({
               teacherName={teacherName}
               classCode={frequency}
               price={0} isReschedule={false}
+              language={locale}
                />
         </CardContent>
       </Card>
