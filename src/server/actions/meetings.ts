@@ -9,13 +9,13 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { MeetingStatus, RescheduleStatus } from "@prisma/client"
 import { addDays, format, formatISO, parse } from "date-fns"
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 export async function createMeeting(
   unsafeData: z.infer<typeof meetingActionSchema>
 ) {
   const { success, data } = meetingActionSchema.safeParse(unsafeData)
-  
+
   if (!success) return { error: true }
 
 
@@ -33,18 +33,12 @@ export async function createMeeting(
   const formattedTime = format(data.startTime, 'yyyy-MM-dd HH:mm:ss');
 
 
-const zonedTime = DateTime.fromFormat(formattedTime, 'yyyy-MM-dd HH:mm:ss', {
-  zone: data.timezone,
-});
+  const zonedTime = DateTime.fromFormat(formattedTime, 'yyyy-MM-dd HH:mm:ss', {
+    zone: data.timezone,
+  });
 
 
   const startInTimezone = zonedTime.toJSDate();
-
-
-console.log('Raw start:', data.start);
-console.log('Client timezone:', data.timezone);
-// console.log('Localized time:', newTestlocalized.toISO()); 
-// console.log('UTC time:', newTestlocalized.toUTC().toISO()); 
 
 
   const ti = await db.query.ScheduleTable.findFirst({
@@ -102,7 +96,7 @@ console.log('Client timezone:', data.timezone);
         }
       })
     } catch (error) {
-      
+
       return { error: true }
     }
 
@@ -117,6 +111,9 @@ console.log('Client timezone:', data.timezone);
 
   if (data.isReschedule) {
     try {
+
+
+
       const res = await createCalendarEvent({
         ...data,
         startTime: data.start,
@@ -183,11 +180,29 @@ console.log('Client timezone:', data.timezone);
       console.log('====================================');
     }
 
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          id: data.userId
+        }
+      })
 
-    redirect(
-      `/reschedule/${data.teacherId}/${data.userId
-      }/${data.classBundleId!}/reschedule/success?startTime=${data.start.toISOString()}`
-    )
+
+      if (user) {
+        redirect(
+          `https://www.studybuddy.ing/${user.locale}`
+        )
+      } else {
+        redirect(
+          `/reschedule/${data.teacherId}/${data.userId
+          }/${data.classBundleId!}/success?startTime=${data.start.toISOString()}`
+        )
+      }
+    } catch (error) {
+      console.log('====================================');
+      console.log(error);
+      console.log('====================================');
+    }
   }
 
   if (data.frequency === 4 && data.classPerWeek === 1 || data.frequency === 12 && data.classPerWeek === 1 || data.frequency === 48 && data.classPerWeek === 1) {
