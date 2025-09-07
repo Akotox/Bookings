@@ -111,26 +111,23 @@ export async function createMeeting(
 
   if (data.isReschedule) {
     try {
-
-
-
       const res = await createCalendarEvent({
         ...data,
         startTime: data.start,
         durationInMinutes: event.durationInMinutes,
         eventName: event.name,
         isTrial: false,
-        frequency: data.frequency
-      })
+        frequency: data.frequency,
+      });
 
       const meeting = await prisma.meeting.findFirst({
         where: {
-          id: data.classBundleId!
-        }
-      })
-
+          id: data.classBundleId!,
+        },
+      });
 
       if (meeting) {
+        // Create new rescheduled meeting
         await prisma.meeting.create({
           data: {
             studentId: data.userId,
@@ -141,70 +138,64 @@ export async function createMeeting(
             googleMeetUrl: res.hangoutLink!,
             status: MeetingStatus.SCHEDULED,
             price: meeting.price,
-            description: res!.description!,
+            description: res.description!,
             teacherEmail: res.organizer!.email!,
-            title: res!.summary!,
+            title: res.summary!,
             studentTimeZone: data.timezone,
             teacherTimeZone: ti.timezone,
             teacherFinished: false,
             studentFinished: false,
             duration: event.durationInMinutes,
-            eventId: res.id
-          }
-        })
+            eventId: res.id,
+          },
+        });
 
+        // Delete old calendar event
+        await deleteSingleEvent(
+          data.clerkUserId,
+          meeting.eventId!,
+          meeting.startTime,
+          meeting.endTime
+        );
 
-        const isDeleted = await deleteSingleEvent(data.clerkUserId, meeting.eventId!, meeting.startTime, meeting.endTime)
-
-
+        // Mark reschedule as completed
         await prisma.reschedule.update({
           where: {
-            meetingId: meeting.id
+            meetingId: meeting.id,
           },
           data: {
-            status: RescheduleStatus.COMPLETED
-          }
-        })
+            status: RescheduleStatus.COMPLETED,
+          },
+        });
 
+        // Delete old meeting entry
         await prisma.meeting.delete({
           where: {
-            id: meeting.id
-          }
-        })
-
+            id: meeting.id,
+          },
+        });
       }
-
     } catch (error) {
-      console.log('====================================');
+      console.log("====================================");
       console.log(error);
-      console.log('====================================');
+      console.log("====================================");
     }
 
-    try {
-      const user = await prisma.user.findFirst({
-        where: {
-          id: data.userId
-        }
-      })
+    // ✅ Redirect should *not* be inside try/catch
+    const user = await prisma.user.findFirst({
+      where: {
+        id: data.userId,
+      },
+    });
 
-
-      if (user) {
-        redirect(
-          `https://www.studybuddy.ing/${user.locale}`
-        )
-      } else {
-        redirect(
-          `/reschedule/${data.teacherId}/${data.userId
-          }/${data.classBundleId!}/success?startTime=${data.start.toISOString()}`
-        )
-      }
-    } catch (error) {
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
+    if (user) {
+      redirect(`https://www.studybuddy.ing/${user.locale}`);
+    } else {
+      redirect(
+        `/reschedule/${data.teacherId}/${data.userId}/${data.classBundleId!}/success?startTime=${data.start.toISOString()}`
+      );
     }
   }
-
   if (data.frequency === 4 && data.classPerWeek === 1 || data.frequency === 12 && data.classPerWeek === 1 || data.frequency === 48 && data.classPerWeek === 1) {
 
 
