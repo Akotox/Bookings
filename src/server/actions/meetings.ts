@@ -321,7 +321,7 @@ export async function createMeeting(
       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.classCode}/${data.teacherId}/success?startTime=${data.start.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/${data.step}/success?startTime=${data.start.toISOString()}`
       )
     }
 
@@ -393,10 +393,10 @@ export async function createMeeting(
     }
 
     if (data.step === 3 && (data.frequency === 12 || data.frequency === 36 || data.frequency === 144)) {
-      redirect(
+       redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
-        }/${data.classCode}/${data.teacherId}/success?startTime=${data.start.toISOString()}`
+        }/${data.classCode}/${data.teacherId}/${data.step}/success?startTime=${data.start.toISOString()}`
       )
     }
 
