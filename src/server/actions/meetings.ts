@@ -37,6 +37,10 @@ export async function createMeeting(
     zone: data.timezone,
   });
 
+ console.log('====================================');
+ console.log("bookingId:", data.bookingId);
+ console.log('====================================');
+
 
   const startInTimezone = zonedTime.toJSDate();
 
