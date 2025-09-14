@@ -37,9 +37,9 @@ export async function createMeeting(
     zone: data.timezone,
   });
 
- console.log('====================================');
- console.log("bookingId:", data.bookingId);
- console.log('====================================');
+  console.log('====================================');
+  console.log("bookingId:", data.bookingId);
+  console.log('====================================');
 
 
   const startInTimezone = zonedTime.toJSDate();
@@ -246,16 +246,19 @@ export async function createMeeting(
       endDate = addDays(endDate, 7);
     }
 
-    await prisma.classBooking.update({
-      where: {
-        id: data.bookingId,
-      },
-      data: {
-        createdClassCount: {
-          increment: data.frequency / data.classPerWeek,
+    if (data.bookingId) {
+      await prisma.classBooking.update({
+        where: {
+          id: data.bookingId,
+        },
+        data: {
+          createdClassCount: {
+            increment: data.frequency / data.classPerWeek,
+          }
         }
-      }
-    })
+      })
+    }
+
 
 
     redirect(
@@ -309,16 +312,20 @@ export async function createMeeting(
       endDate = addDays(endDate, 7);
     }
 
-    await prisma.classBooking.update({
-      where: {
-        id: data.bookingId,
-      },
-      data: {
-        createdClassCount: {
-          increment: data.frequency / data.classPerWeek,
+    if (data.bookingId) {
+      await prisma.classBooking.update({
+        where: {
+          id: data.bookingId,
+        },
+        data: {
+          createdClassCount: {
+            increment: data.frequency / data.classPerWeek,
+          }
         }
-      }
-    })
+      })
+    }
+
+
 
 
     if (data.step === 2 && (data.frequency === 8 || data.frequency === 24 || data.frequency === 96)) {
@@ -377,16 +384,20 @@ export async function createMeeting(
       endDate = addDays(endDate, 7);
     }
 
-    await prisma.classBooking.update({
-      where: {
-        id: data.bookingId,
-      },
-      data: {
-        createdClassCount: {
-          increment: data.frequency / data.classPerWeek,
+    if (data.bookingId) {
+      await prisma.classBooking.update({
+        where: {
+          id: data.bookingId,
+        },
+        data: {
+          createdClassCount: {
+            increment: data.frequency / data.classPerWeek,
+          }
         }
-      }
-    })
+      })
+    }
+
+
 
     if (data.step === 2 && (data.frequency === 12 || data.frequency === 36 || data.frequency === 144)) {
       redirect(
@@ -397,7 +408,7 @@ export async function createMeeting(
     }
 
     if (data.step === 3 && (data.frequency === 12 || data.frequency === 36 || data.frequency === 144)) {
-       redirect(
+      redirect(
         `/book/${data.clerkUserId}/${data.eventId
         }/${data.userId
         }/${data.classCode}/${data.teacherId}/${data.step}/success?startTime=${data.start.toISOString()}`
